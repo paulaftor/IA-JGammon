@@ -1,0 +1,97 @@
+<!--
+ JGammon: A Backgammon client with nice graphics written in Java
+ Copyright (C) 2005 Mattias Ulbrich
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License
+ as published by the Free Software Foundation; either version 2
+ of the License, or (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ -->
+
+<project name="JGammon - Backgammon for java" default="postcompile" basedir=".">
+
+  <property name="build" value="classes"/>
+  <property name="src" value="src"/>
+  <property name="doc" value="doc"/>
+
+  <target name="init">
+    <tstamp/>
+    <mkdir dir="${build}"/>
+    <mkdir dir="${doc}"/>
+  </target>
+
+  <target name="compile" depends="init">
+    <javac srcdir="${src}" destdir="${build}" debug="true" source="6">
+    </javac>
+  </target>
+
+  <target name="postcompile" depends="compile">
+    <copy todir="${build}">
+      <fileset includes="**/*.png" dir="${src}"/>
+      <fileset includes="**/*.gif" dir="${src}"/>
+      <fileset includes="**/*.html" dir="${src}"/>
+      <fileset includes="**/*.txt" dir="${src}"/>
+      <fileset includes="**/*.properties" dir="${src}"/>
+    </copy>
+  </target>
+
+  <target name="doc">
+    <javadoc version="yes" sourcePath="${src}" destDir="${doc}"
+	     private="true" windowtitle="JGam" doctitle="JGam">
+    </javadoc>
+  </target>
+
+  <target name="clean">
+    <delete dir="${build}"/>
+  </target>
+
+  <target name="jar" depends="postcompile">
+    <tstamp/>
+    <jar jarfile="JGammon.jar">
+      <fileset dir="${build}" includes="jgam/**"/>
+      <fileset dir="${build}" includes="com/**"/>
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Build-Time" value="${TODAY} ${TSTAMP}"/>
+        <attribute name="Main-Class" value="jgam.JGammon"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="bindist" depends="jar">
+    <zip destfile="JGammon.zip">
+      <fileset file="JGammon.jar"/>
+      <fileset file="LICENSE.txt"/>
+      <fileset file="README.txt"/>
+      <fileset file="jgam.properties"/>
+    </zip>
+  </target>
+
+  <target name="srcjar" depends="init">
+    <zip destfile="JGammon.src.zip">
+      <fileset dir="${src}"/>
+      <fileset file="build.xml"/>
+      <fileset file="LICENSE.txt"/>
+      <fileset file="README.txt"/>
+      <fileset file="jgam.properties"/>
+    </zip>
+  </target>
+
+  <target name="run" depends="jar">
+    <java jar="JGammon.jar" fork="true"/>
+  </target>
+
+</project>
+
+<!-- Local Variables: -->
+<!-- mode: xml -->
+<!-- End: -->

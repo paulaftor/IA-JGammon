@@ -1,0 +1,12 @@
+index.html JGammon Help Contents
+ intro.html Introduction
+  rules.html Rules
+  usage.html Usage
+ a b
+  asd asd
+   asdas asdad
+  asd asdad
+   gbgbg bgbgbg
+   gbgbg bgbgbgbg
+ a c
+  newGameDialog.html New Game Dialog
