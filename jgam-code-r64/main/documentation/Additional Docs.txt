@@ -1,0 +1,26 @@
+Reinforcement in board games
+http://www.cs.bris.ac.uk/Publications/Papers/2000100.pdf
+
+Take-Points in Money Games
+by Rick Janowski
+http://www.msoworld.com/mindzine/news/classic/bg/cubeformulae.pdf
+https://arxiv.org/pdf/1203.5692.pdf
+
+Principles of training multi-layer 
+neural network using backpropagation
+http://galaxy.agh.edu.pl/~vlsi/AI/backp_t_en/backprop.html
+
+Brownian movement, doubling
+http://plus.maths.org/content/os/issue15/features/doubling/index
+
+Cubes in Races
+www.bkgm.com/articles/CubeHandlingInRaces/
+
+On Doubling
+http://www.bkgm.com/articles/page4.html
+
+Sutton on TD Learning
+http://webdocs.cs.ualberta.ca/~sutton/book/ebook/node108.html
+
+Rollout confidence intervals
+https://en.wikipedia.org/wiki/Binomial_proportion_confidence_interval

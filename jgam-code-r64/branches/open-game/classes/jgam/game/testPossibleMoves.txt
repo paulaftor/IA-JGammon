@@ -1,0 +1,23 @@
+JGAM
+# This is a JGam saved backgammon board
+
+# Created: Tue Apr 03 11:15:07 CEST 2012
+1333444507437
+
+# Comment: 
+beispiel!
+
+#player1's board:
+11:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:1:1
+
+#player2's board:
+15:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0
+
+# Whose turn is it? 1 for player1, 2 for player2, 0 not yet decided
+1
+
+# Double cube. value of the double player and then the player who may double (or 1)
+1 1
+
+# the dice (if any) e.g. 2 4. Or "nodice"
+2 4

@@ -1,0 +1,51 @@
+/**
+ * <p>Title: JGam - Java Backgammon</p>
+ *
+ * <p>Description: </p>
+ *
+ * <p>Copyright: Copyright (c) 2005</p>
+ *
+ * <p>Company: </p>
+ *
+ * @author Mattias Ulbrich
+ * @version 1.0
+ */
+public class JassTest {
+    public JassTest() {
+        super();
+    }
+
+    public final static int SECONDS_PER_DAY = 86400;
+
+    private int secondsSinceMidnight = 0;
+
+    public int getSeconds() {
+        return secondsSinceMidnight % 60;
+    }
+
+    public int getMinutes() {
+        return (secondsSinceMidnight / 60) % 60;
+    }
+
+    public int getHours() {
+        return secondsSinceMidnight / 3600;
+    }
+
+    public void setSeconds(int seconds) {
+        /** require 0 <= seconds; seconds < 60; **/
+        secondsSinceMidnight = secondsSinceMidnight
+                               - (secondsSinceMidnight % 60)
+                               + seconds;
+        /** ensure getSeconds() == seconds;
+                   getMinutes() == Old.getMinutes();
+                   getHours() == Old.getHours();
+         **/
+        }
+
+    /** invariant secondsSinceMidnight >= 0;
+                  secondsSinceMidnight < 86400;
+                  getSeconds() < 60 && getSeconds() >= 0;
+                  getMintues() < 60 && getMinutes() >= 0;
+                  getHours() < 24 && getHours() >= 0;
+     **/
+}
