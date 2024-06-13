@@ -48,6 +48,7 @@ public class NewGameDialog extends JDialog {PropertyResourceBundle r = null;
     private JRadioButton RBserverWhite = new JRadioButton();
     private JRadioButton RBclient = new JRadioButton();
     private JRadioButton RBgnubg = new JRadioButton();
+    private JRadioButton RBComputer = new JRadioButton();
     private Component component1 = Box.createHorizontalStrut(8);
     private JLabel jLabel1 = new JLabel();
     private JTextField name1 = new JTextField();
@@ -124,6 +125,8 @@ public class NewGameDialog extends JDialog {PropertyResourceBundle r = null;
         RBlocal.setSelected(true);
         RBlocal.setText(msg.getString("local"));
         RBlocal.addChangeListener(changeListener);
+        RBComputer.setText(msg.getString("computer"));
+        RBComputer.addChangeListener(changeListener);
         RBnetwork.addChangeListener(changeListener);
         RBclient.addChangeListener(changeListener);
         RBserverBlue.addChangeListener(changeListener);
@@ -178,8 +181,10 @@ public class NewGameDialog extends JDialog {PropertyResourceBundle r = null;
         fileNameLabel.setPreferredSize(new Dimension(150, 15));
         RBlocal.setEnabled(true);
         RBclient.setEnabled(true);
+        RBComputer.setEnabled(true);
         topGroup.add(RBlocal);
         topGroup.add(RBnetwork);
+        topGroup.add(RBComputer);
         remoteGroup.add(RBclient);
         remoteGroup.add(RBserverBlue);
         remoteGroup.add(RBserverWhite);
@@ -265,6 +270,12 @@ public class NewGameDialog extends JDialog {PropertyResourceBundle r = null;
         panel1.add(fileNameLabel, new GridBagConstraints(3, 11, 1, 1, 0.0, 0.0
                 , GridBagConstraints.WEST, GridBagConstraints.NONE,
                 new Insets(10, 10, 10, 0), 0, 20));
+        panel1.add(RBComputer, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0
+                , GridBagConstraints.WEST, GridBagConstraints.NONE,
+                new Insets(10, 0, 10, 0), 0, 0));
+        panel1.add(RBComputer, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0
+                , GridBagConstraints.WEST, GridBagConstraints.NONE,
+                new Insets(10, 0, 10, 0), 0, 0));
         this.getContentPane().add(panel1, java.awt.BorderLayout.CENTER);
 
  }
