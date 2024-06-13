@@ -1,0 +1,20 @@
+race.ser
+	Ancient net (probably old version)
+
+racenet.ser
+	First training using ply-1 and initial player to create rollout
+	scenrios. Apr-2012.
+	During training, a mean deviation from expected trounds to go were
+	around 0.2
+
+race1-12-04-12.ser
+	Training of a 15 hidden-nodes net using 10000 ply-1 games
+	expected deviation around .1
+
+race2-12-04-12.ser
+	enhanced version of the above with 100 ply-2 games
+
+racenet-52-201804.ser
+	Rollout for a 20 hidden notes net trained on 15000 boards evaluated using rollout.
+	Its range is 0.1 to 0.9 for 0.0 to 1.0.
+	It has 52 features, one output (no gammon computation)
