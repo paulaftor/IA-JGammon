@@ -67,7 +67,7 @@ public class MonochromeBoardImplementation extends AbstractBoardImplementation {
 
         String language = Locale.getDefault().getLanguage();
         if (language.equals("de")) {
-            color1 = "weiß";
+            color1 = "weiss";
             color2 = "schwarz";
         } else {
             color1 = "white";
@@ -87,7 +87,7 @@ public class MonochromeBoardImplementation extends AbstractBoardImplementation {
     public String toString() {
         Locale l = Locale.getDefault();
         if (Locale.getDefault().getLanguage().equals("de")) {
-            return "Monochrom - Größe änderbar";
+            return "Monochrom - Grosse Underbar";
         } else {
             return "Monochrome - resizable";
         }

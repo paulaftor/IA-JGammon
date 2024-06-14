@@ -1,0 +1,22 @@
+index.html JGammon Help Contents
+ usingHelp.html Using help
+ intro_de.html Einführung
+  install_de.html Installation und Starten
+  commandline.html Command line options
+  play.html Let's play
+ rules.html Backgammon rules
+ dialogs.html Fenster und Dialoge
+  mainWindow_de.html Das Hauptfenster
+  toolbar_de.html Die Werkzeugleiste
+  newGameDialog.html The "New Game" dialog
+  historyWindow.html The "History" window
+ files.html Saving and loading games
+  boardFile.html Saving, manipulation and loading of board setups.
+  historyFile.html Saving and loading of game histories.
+ designs.html Various designs
+ details_de.html Technische Details
+  releases.html Changes in the releases
+  future.html Future ideas
+  implementDesign.html Make a design of your own
+  implementAI.html Make an artificial intelligence of your own
+  secureDice.html Secure Dice

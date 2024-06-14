@@ -23,8 +23,8 @@
 	<property name="src" value="src" />
 	<property name="doc" value="doc" />
 	<property name="lib" value="lib" />
-	<property name="sourceVersion" value="1.5"/>
-	<property name="targetjre" value="1.5" />
+	<property name="sourceVersion" value="1.6"/>
+	<property name="targetjre" value="1.6" />
 	<property name="debug" value="true" />
 	<property name="version" value="1.0.7" />
 
@@ -144,6 +144,14 @@
 				<attribute name="Build-Time" value="${TODAY} ${TSTAMP}" />
 			</manifest>
 		</jar>
+	</target>
+
+	<target name="run" depends="jar">
+		<java classname="jgam.JGammon" fork="true">
+			<classpath>
+				<pathelement location="JGammon.jar" />
+			</classpath>
+		</java>
 	</target>
 
 </project>

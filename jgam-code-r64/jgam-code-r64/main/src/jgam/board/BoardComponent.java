@@ -505,7 +505,7 @@ public class BoardComponent extends JComponent {
     // actions
 
     /**
-     * turn the board for 180°
+     * turn the board for 180 degrees.
      */
     public void toggleTurn() {
         toggleTopBottom();
