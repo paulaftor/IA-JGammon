@@ -61,6 +61,7 @@ public class NewGameDialog extends JDialog {
     private JRadioButton RBnetwork = new JRadioButton();
     private JRadioButton RBclient = new JRadioButton();
     private JRadioButton RBcomputer = new JRadioButton();
+    private JRadioButton RBai = new JRadioButton();
     private Component component1 = Box.createHorizontalStrut(8);
     private JLabel jLabel1 = new JLabel();
     private JTextField name1 = new JTextField();
@@ -151,10 +152,10 @@ public class NewGameDialog extends JDialog {
         RBcomputer.setText(msg.getString("gnubg"));
         jLabel1.setText(msg.getString("locname1"));
         name1.setPreferredSize(new Dimension(110, 20));
-        name1.setText("Antonetta");
+        name1.setText("Paula");
         jLabel2.setText(msg.getString("locname2"));
         name2.setPreferredSize(new Dimension(110, 20));
-        name2.setText("Beatrice");
+        name2.setText("Luca");
         jLabel4.setText(msg.getString("server"));
         jLabel5.setText(msg.getString("port"));
         port.setPreferredSize(new Dimension(110, 20));
@@ -326,6 +327,21 @@ public class NewGameDialog extends JDialog {
                             return true;
                         }
                     }
+                // insert here AI x AI
+                //} else if (RBai.isSelected()) {
+                //   AI selectedAI1 = selectAI();
+                //   AI selectedAI2 = selectAI();
+                //   if (selectedAI1 != null && selectedAI2 != null) {
+                //       Player player1 = new AIPlayer(selectedAI1);
+                //       Player player2 = new AIPlayer(selectedAI2);
+                //       game = new Game(new LocalDiceRoller(), player1, player2, jgam);
+                //       if (boardFile != null) {
+                //           BoardSetup snapshot = new FileBoardSetup(boardFile);
+                //           if (invertSnapshot.isSelected()) {
+                //               snapshot = new InvertedBoardSetup(snapshot);
+                //           }
+                //           game.setBoardSetup(snapshot);
+                //       return true;
                 } else { // network game
                     if (locName.getText().length() == 0) {
                         JOptionPane.showMessageDialog(this,
