@@ -85,6 +85,8 @@ public class NewGameDialog extends JDialog {
 
     private ImageIcon local = new ImageIcon(NewGameDialog.class.getResource(
                               "/jgam/img/local.gif"));
+    private ImageIcon ai = new ImageIcon(NewGameDialog.class.getResource(
+                            "/jgam/img/Google-Noto-Emoji-People-Clothing-Objects-12130-brain.512.png"));
     private ImageIcon networkIcon = new ImageIcon(NewGameDialog.class.
                                     getResource(
                                     "/jgam/img/network.gif"));
@@ -139,10 +141,12 @@ public class NewGameDialog extends JDialog {
         };
 
         panel1.setLayout(gridBagLayout1);
-        RBlocal.setSelected(true);
-        RBlocal.setText(msg.getString("local"));
-        RBlocal.addChangeListener(changeListener);
+        //RBlocal.setSelected(true);
+        //RBlocal.setText(msg.getString("local"));
+        //RBlocal.addChangeListener(changeListener);
         RBai.addChangeListener(changeListener);
+        RBai.setText(msg.getString("ai"));
+        RBai.setSelected(true);
         RBnetwork.addChangeListener(changeListener);
         RBclient.addChangeListener(changeListener);
         RBserver.addChangeListener(changeListener);
@@ -177,6 +181,7 @@ public class NewGameDialog extends JDialog {
         });
         server.setPreferredSize(new Dimension(110, 20));
         jLabel6.setIcon(local);
+        //jLabel6.setIcon(ai);
         jLabel7.setIcon(networkIcon);
         jLabel8.setIcon(aiIcon);
         jLabel3.setText(msg.getString("localName"));
@@ -201,21 +206,22 @@ public class NewGameDialog extends JDialog {
         invertSnapshot.setText(msg.getString("loadinvert"));
         jLabel10.setText(msg.getString("localName"));
         topGroup.add(RBlocal);
+        topGroup.add(RBai);
         topGroup.add(RBnetwork);
         topGroup.add(RBcomputer);
         remoteGroup.add(RBclient);
         remoteGroup.add(RBserver);
         this.getContentPane().add(panel1, java.awt.BorderLayout.CENTER);
-        panel1.add(RBlocal, new GridBagConstraints(1, 0, 4, 1, 0.0, 0.0
+        panel1.add(RBai, new GridBagConstraints(1, 0, 4, 1, 0.0, 0.0
                 , GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(20, 0, 0, 0), 2, 0));
         panel1.add(component1, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0
                 , GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 20, 0));
         panel1.add(jLabel6, new GridBagConstraints(0, 0, 1, 3, 0.0, 0.0
                 , GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(20, 20, 20, 20), 0, 0));
-        panel1.add(jLabel1, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0
-                , GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
-        panel1.add(jLabel2, new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0
-                , GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+        //panel1.add(jLabel1, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0
+        //        , GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+        //panel1.add(jLabel2, new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0
+        //        , GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
         panel1.add(jLabel4, new GridBagConstraints(2, 8, 2, 1, 0.0, 0.0
                 , GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
         panel1.add(jLabel5, new GridBagConstraints(2, 9, 2, 1, 0.0, 0.0
@@ -248,10 +254,10 @@ public class NewGameDialog extends JDialog {
                 , GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
         panel1.add(locName, new GridBagConstraints(4, 10, 1, 1, 0.0, 0.0
                 , GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
-        panel1.add(name1, new GridBagConstraints(4, 1, 1, 1, 0.0, 0.0
-                , GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
-        panel1.add(name2, new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0
-                , GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
+        //panel1.add(name1, new GridBagConstraints(4, 1, 1, 1, 0.0, 0.0
+        //        , GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
+        //panel1.add(name2, new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0
+        //        , GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
         panel1.add(RBcomputer, new GridBagConstraints(1, 3, 4, 1, 0.0, 0.0
                 , GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(20, 0, 0, 0), 0, 0));
         panel1.add(jLabel8, new GridBagConstraints(0, 3, 1, 2, 0.0, 0.0
@@ -282,6 +288,7 @@ public class NewGameDialog extends JDialog {
             }
 
             try {
+                /* 
                 if (RBlocal.isSelected()) {
                     if (name1.getText().length() == 0) {
                         JOptionPane.showMessageDialog(this,
@@ -307,6 +314,23 @@ public class NewGameDialog extends JDialog {
                         }
                         return true;
                     }
+                */
+                if (RBai.isSelected()) {
+                   AI selectedAI1 = selectAI();
+                   AI selectedAI2 = selectAI();
+                   if (selectedAI1 != null && selectedAI2 != null) {
+                       Player player1 = new AIPlayer(selectedAI1);
+                       Player player2 = new AIPlayer(selectedAI2);
+                       game = new Game(new LocalDiceRoller(), player1, player2, jgam);
+                       if (boardFile != null) {
+                           BoardSetup snapshot = new FileBoardSetup(boardFile);
+                           if (invertSnapshot.isSelected()) {
+                               snapshot = new InvertedBoardSetup(snapshot);
+                           }
+                           game.setBoardSetup(snapshot);
+                        }
+                    return true;
+                }
                 } else if (RBcomputer.isSelected()) {
                     if (locName.getText().length() == 0) {
                         JOptionPane.showMessageDialog(this,
@@ -330,21 +354,6 @@ public class NewGameDialog extends JDialog {
                             return true;
                         }
                     }
-                // insert here AI x AI
-                //} else if (RBai.isSelected()) {
-                //   AI selectedAI1 = selectAI();
-                //   AI selectedAI2 = selectAI();
-                //   if (selectedAI1 != null && selectedAI2 != null) {
-                //       Player player1 = new AIPlayer(selectedAI1);
-                //       Player player2 = new AIPlayer(selectedAI2);
-                //       game = new Game(new LocalDiceRoller(), player1, player2, jgam);
-                //       if (boardFile != null) {
-                //           BoardSetup snapshot = new FileBoardSetup(boardFile);
-                //           if (invertSnapshot.isSelected()) {
-                //               snapshot = new InvertedBoardSetup(snapshot);
-                //           }
-                //           game.setBoardSetup(snapshot);
-                //       return true;
                 } else { // network game
                     if (locName.getText().length() == 0) {
                         JOptionPane.showMessageDialog(this,
@@ -420,7 +429,7 @@ public class NewGameDialog extends JDialog {
         }
 
         Object desc = JOptionPane.showInputDialog(this,
-                      "Please choose the AI implementation to play against:",
+                      "Please choose the AI implementation:",
                       "Choose computer player",
                       JOptionPane.QUESTION_MESSAGE, aiIcon, descs.toArray(), descs.get(0));
 
