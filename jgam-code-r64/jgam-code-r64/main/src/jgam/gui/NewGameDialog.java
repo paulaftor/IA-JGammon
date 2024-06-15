@@ -142,6 +142,7 @@ public class NewGameDialog extends JDialog {
         RBlocal.setSelected(true);
         RBlocal.setText(msg.getString("local"));
         RBlocal.addChangeListener(changeListener);
+        RBai.addChangeListener(changeListener);
         RBnetwork.addChangeListener(changeListener);
         RBclient.addChangeListener(changeListener);
         RBserver.addChangeListener(changeListener);
@@ -261,6 +262,8 @@ public class NewGameDialog extends JDialog {
                 , GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 20), 0, 0));
         panel1.add(jLabel10, new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0
                 , GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+        //panel1.add(RBai, new GridBagConstraints(1, 2, 4, 1, 0.0, 0.0
+        //        , GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(20, 0, 0, 0), 0, 0));
     }
 
 
