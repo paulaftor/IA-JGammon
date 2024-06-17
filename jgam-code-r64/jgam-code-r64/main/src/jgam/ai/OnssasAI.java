@@ -49,8 +49,6 @@ public class OnssasAI implements AI {
                 eval += 100.0;
             else if (numCheckers == 1)
                 eval -= 75.0;
-            else
-                eval -= 25.0 * numCheckers;
 
             if ((player == 1 && i >= 19) || (player == 2 && i <= 6))
                 checkersInLastSix += numCheckers;
