@@ -60,7 +60,7 @@ import java.util.TreeMap;
  */
 public class BearOff12AI extends RoundEstimatingAI {
 
-    private TreeLookup table;
+    private HashMap<Integer, Float> table;
     private int count;
 
     public static final String FILENAME = "bearoff12.dat";
@@ -114,8 +114,8 @@ public class BearOff12AI extends RoundEstimatingAI {
         }
         DataInputStream dis = new DataInputStream(is);
         
-        table = new TreeLookup();
-        table.put(0l, 0.0f);
+        table = new HashMap<>();
+        table.put((int) 0l, 0.0f);
         
         for (long print = 1; print <= 0x00f00000000000l; print = nextPrint(print)) {
 
@@ -133,7 +133,7 @@ public class BearOff12AI extends RoundEstimatingAI {
             int read = dis.readShort();
 
             float floatval = read / 256f;
-            table.put(print, floatval);
+            table.put((int) print, floatval);
         }
 
         dis.close();
@@ -282,7 +282,7 @@ public class BearOff12AI extends RoundEstimatingAI {
      * Put in the empty board with an estimated 0 rounds.
      */
     private short[] makeTable(ProgressMonitor progress) {
-        table = new TreeLookup();
+        table = new HashMap<>();
 
         // return the entries in an array
         short[] ret = new short[SIZE];
@@ -291,7 +291,7 @@ public class BearOff12AI extends RoundEstimatingAI {
         long start = System.currentTimeMillis();
 
         // thats the base case
-        table.put(0l, 0.0f);
+        table.put((int) 0l, 0.0f);
 
         for (long print = 1; print <= 1l << RANGE*4; print = nextPrint(print)) {
             if (count % 100000 == 0) {
@@ -314,7 +314,7 @@ public class BearOff12AI extends RoundEstimatingAI {
 
             float floatval = eval(print);
             ret[count++] = (short) (floatval * 256);
-            table.put(print, floatval);
+            table.put((int) print, floatval);
         }
         return ret;
     }

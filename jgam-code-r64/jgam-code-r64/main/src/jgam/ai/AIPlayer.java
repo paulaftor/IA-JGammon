@@ -115,10 +115,10 @@ public class AIPlayer extends Player {
     private void mymoves() throws CannotDecideException {
         if (game.getGameBoard().canMove()) {
             MoveChain moves = ai.makeMoves(game.getGameBoard());
-//            if (ai instanceof EvaluatingAI) {
-//                double eval = ((EvaluatingAI) ai).probabilityToWin(game.getGameBoard());
-//                System.out.println("Board estimated to a winning chance of " + eval + " for "+getName()+".");
-//            }
+            if (ai instanceof EvaluatingAI) {
+                double eval = ((EvaluatingAI) ai).probabilityToWin(game.getGameBoard());
+                System.out.println("Board estimated to a winning chance of " + eval + " for "+getName()+".");
+            }
             for (int i = 0; i < moves.size(); i++) {
                 game.sendPlayerMessage(new PlayerMessage(AIPlayer.this, PlayerMessage.MessageType.MOVE, moves.get(i)));
             }

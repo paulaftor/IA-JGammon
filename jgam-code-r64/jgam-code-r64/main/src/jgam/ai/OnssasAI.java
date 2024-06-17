@@ -1,109 +1,106 @@
 package jgam.ai;
 
-import java.util.*;
+import jgam.game.BoardSetup;
+import jgam.game.MoveChain;
+import jgam.game.PossibleMoves;
+import jgam.game.SingleMove;
 
-import jgam.game.*;
+import java.util.Iterator;
+import java.util.List;
 
-public class OnssasAI implements AI{
-    public OnssasAI() {
-    }
+public class OnssasAI implements AI {
+    public void init() throws Exception {
 
-    public String getDescription() {
-        return "Onssas' first AI";
-    }
-
-    public String getName() {
-        return "OnssasAI";
-    }
-
-    public void init() {
     }
 
     public void dispose() {
+
     }
 
-    /**
-    * @param boardSetup BoardSetup
-    * 
-    */
+    public String getName() {
+        return "Onssas AI";
+    }
 
-    public int takeOrDrop(BoardSetup boardSetup) {
-        Random r = new Random();
-        if (r.nextInt(2) == 0)
-            return DROP;
+    public String getDescription() {
+        return "Onssas' first AI attempt";
+    }
+
+    private double heuristica(BoardSetup bs) {
+        double eval = 0.0;
+
+        int player = bs.getPlayerAtMove();
+        int opponent = 3 - player;
+
+        int checkersInLastSix = 0;
+        for (int i = 1; i < 25; i++) {
+            int numCheckers = bs.getPoint(player, i);
+            int opponentNumCheckers = bs.getPoint(opponent, i);
+
+            if (opponentNumCheckers == 1)
+                eval += 75.0;
+            else if (opponentNumCheckers == 0)
+                eval += 25.0;
+            else
+                eval -= 100.0;
+            
+            if (numCheckers >= 3)
+                eval -= 10.0 * numCheckers;
+            else if (numCheckers == 2)
+                eval += 100.0;
+            else if (numCheckers == 1)
+                eval -= 75.0;
+            else
+                eval -= 25.0 * numCheckers;
+
+            if ((player == 1 && i >= 19) || (player == 2 && i <= 6))
+                checkersInLastSix += numCheckers;
+        }
+
+        if (checkersInLastSix == 15)
+            eval += 1000.0;
+        else if (checkersInLastSix >= 12)
+            eval += 100.0;
+        else if (checkersInLastSix >= 9)
+            eval += 50.0;
+        else if (checkersInLastSix >= 6)
+            eval += 20.0;
+        else if (checkersInLastSix >= 3)
+            eval += 10.0;
+
+        int totalPoints = bs.getPoint(player, 25);
+        eval += 50.0 * totalPoints;
+
+        return eval;
+    }
+
+    public MoveChain makeMoves(BoardSetup bs) throws CannotDecideException {
+        double eval = Double.NEGATIVE_INFINITY;
+        int movimento = -1;
+
+        PossibleMoves pm = new PossibleMoves(bs);
+        List moveList = pm.getPossbibleNextSetups();
+
+        int i = 0;
+        for (Iterator iter = moveList.iterator(); iter.hasNext(); i++) {
+            BoardSetup boardSetup = (BoardSetup) iter.next();
+            double thisEvaluation = heuristica(boardSetup);
+            if (thisEvaluation > eval) {
+                eval = thisEvaluation;
+                movimento = i;
+            }
+        }
+
+        if (movimento == -1)
+            return new MoveChain();
         else
-            return TAKE;
-    }
-
-    public MoveChain makeMoves(BoardSetup boardSetup) {
-
-        double bestValue = Double.NEGATIVE_INFINITY;
-        int bestIndex = -1;
-
-        PossibleMoves pm = new PossibleMoves(boardSetup);
-        List list = pm.getPossbibleNextSetups();
-        int index = 0;
-        for (Iterator iter = list.iterator(); iter.hasNext(); index++) {
-            BoardSetup setup = (BoardSetup) iter.next();
-            double value = eval(setup);
-            if (value > bestValue) {
-                bestValue = value;
-                bestIndex = index;
-            }
-        }
-
-        if (bestIndex == -1)
-            return MoveChain.EMPTY;
-        else {
-            // Sy stem.out.println("Evaluation for this move: "+bestValue);
-            return pm.getMoveChain(bestIndex);
-        }
-    }
-    private double eval(BoardSetup setup) {
-        int blots = 0;
-        int holding = 0;
-        int block = 0;
-        int player = setup.getPlayerAtMove();
-
-        // xx block --> 1 point
-        // xxx block --> 3 points
-        // xxxx --> 6
-        // xxxxx --> 10
-        // xxxxxx --> 15
-        // xxxxxxxxx... --> 15
-
-        int curBlock = 0;
-        for (int i = 1; i <= 24; i++) {
-
-            int p = setup.getPoint(player, i);
-            if (p == 1) {
-                blots++;
-                curBlock = 0;
-            } else if (p >= 2) {
-                holding++;
-                block += curBlock;
-                curBlock ++;
-            } else {
-                curBlock = 0;
-            }
-        }
-
-        int hisbar = setup.getBar(3 - player);
-
-        double v = setup.calcPip(3 - player) / 100.;
-        v += -blots * .5;
-        v -= Hits.computeExpectedBarIncrease(setup) * 2;
-        v += holding * .2;
-        v += block * .2;
-        v += hisbar * .5;
-
-
-        return v;
-
+            return pm.getMoveChain(movimento);
     }
 
     public int rollOrDouble(BoardSetup boardSetup) throws CannotDecideException {
-        // TODO Auto-generated method stub
         return ROLL;
+    }
+
+    public int takeOrDrop(BoardSetup boardSetup) throws CannotDecideException {
+        return TAKE;
     }
 }
