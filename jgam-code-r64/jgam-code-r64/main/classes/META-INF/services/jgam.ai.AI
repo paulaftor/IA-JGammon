@@ -18,3 +18,5 @@ jgam.ai.RandomAI
 # jgam.ai.GnuBgAI
 
 jgam.ai.HypergammonTableAI
+
+jgam.ai.OnssasAI

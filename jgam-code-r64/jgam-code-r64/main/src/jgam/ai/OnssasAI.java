@@ -91,7 +91,7 @@ public class OnssasAI implements AI{
         int hisbar = setup.getBar(3 - player);
 
         double v = setup.calcPip(3 - player) / 100.;
-        //v += -blots * .5;
+        v += -blots * .5;
         v -= Hits.computeExpectedBarIncrease(setup) * 2;
         v += holding * .2;
         v += block * .2;
