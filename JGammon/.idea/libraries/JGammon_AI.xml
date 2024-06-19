@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="JGammon_AI">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/out/JGammon_AI.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
