@@ -30,7 +30,7 @@ public class OnssasAI implements AI {
         int player = bs.getPlayerAtMove();
         int opponent = 3 - player;
 
-        int checkersInLastSix = 0;
+        int checkersInLastHalf = 0;
         int checkersInFirstSix = 0;
 
         for (int i = 1; i < 25; i++) {
@@ -43,7 +43,7 @@ public class OnssasAI implements AI {
                 eval += 40.0;
             else
                 eval -= 150.0;
-            
+
             if (numCheckers >= 4)
                 eval -= 30.0 * numCheckers;
             else if (numCheckers >= 2)
@@ -51,37 +51,40 @@ public class OnssasAI implements AI {
             else if (numCheckers == 1)
                 eval -= 250.0;
 
-            if ((player == 1 && i >= 19) || (player == 2 && i <= 6))
-                checkersInLastSix += numCheckers;
-            
+            if ((player == 1 && i >= 13) || (player == 2 && i <= 12))
+                checkersInLastHalf += numCheckers;
+
             if ((player == 1 && i <= 6) || (player == 2 && i >= 19))
                 checkersInFirstSix += numCheckers;
 
-            
             if ((player == 1 && i <= 13) || (player == 2 && i >= 12))
                 eval -= 20.0 * numCheckers;
-            else 
+            else
                 eval += 20.0 * numCheckers;
         }
 
-        if (checkersInLastSix == 15)
+        if (checkersInLastHalf == 15)
             eval += 1000.0;
-        else if (checkersInLastSix >= 12)
+        else if (checkersInLastHalf >= 12)
             eval += 400.0;
-        else if (checkersInLastSix >= 9)
+        else if (checkersInLastHalf >= 9)
             eval += 250.0;
-        else if (checkersInLastSix >= 6)
+        else if (checkersInLastHalf >= 6)
             eval += 40.0;
-        else if (checkersInLastSix >= 3)
+        else if (checkersInLastHalf >= 3)
             eval += 15.0;
 
         if (checkersInFirstSix == 0)
-            eval += 10000.0;
+            eval += 1000.0;
         else if (checkersInFirstSix == 1)
             eval -= 500.0;
         else if (checkersInFirstSix >= 2)
-            eval -= 20000.0;
-        
+            eval -= 1000.0;
+
+        if (player == 1)
+            eval -= 1000.0 * bs.getPoint(1, 24);
+        else
+            eval -= 1000.0 * bs.getPoint(2, 1);
 
         int totalPoints = bs.getPoint(player, 25);
         eval += 50.0 * totalPoints;

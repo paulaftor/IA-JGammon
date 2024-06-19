@@ -37,7 +37,6 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileFilter;
 
-import com.sun.org.apache.bcel.internal.generic.LSTORE;
 import jgam.*;
 import jgam.ai.*;
 import jgam.game.*;
@@ -464,7 +463,6 @@ public class NewGameDialog extends JDialog {
         boolean local = RBlocal.isSelected();
         boolean net = RBnetwork.isSelected();
         boolean ai = RBcomputer.isSelected();
-        boolean aivai = RBcvc.isSelected(); // TODO Não sei do porque
         boolean client = net && RBclient.isSelected();
 
         name1.setEnabled(local);
