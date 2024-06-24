@@ -42,7 +42,7 @@ import jgam.ai.*;
 import jgam.game.*;
 import jgam.net.*;
 import jgam.util.*;
-import java.util.ServiceLoader;
+import jgam.board.*;
 
 
 /**
@@ -101,6 +101,8 @@ public class NewGameDialog extends JDialog {
     private JCheckBox invertSnapshot = new JCheckBox();
     private File boardFile = null;
 
+    public int numJogos = 0;
+    public int numJogosClone;
     private java.util.List<Game> game;
     private JGammonConnection gameConnection;
 
@@ -341,14 +343,24 @@ public class NewGameDialog extends JDialog {
                     AI pSelec = selectAI();
                     AI sSelec = selectAI();
 
-                    int nJgs = Integer.parseInt(JOptionPane.showInputDialog(null, "Digite o numero de jogos:"));
+                    numJogos = Integer.parseInt(JOptionPane.showInputDialog(null, "Digite o numero de jogos:"));
+                    int velocidade;
+                    do {
+                        velocidade = Integer.parseInt(JOptionPane.showInputDialog(null, "Digite a velocidade dos movimentos (1 a 10): "));
+                    } while (velocidade <= 0 || velocidade > 10);
+                    
+                    BoardAnimation.STEPLENGTH = velocidade*25;
+
+                    numJogosClone = numJogos;
 
                     if (pSelec != null && sSelec != null) {
-                        for (int i = 0; i < nJgs; i++) {
+                        for (int i = 0; i < numJogos; i++) {
+                            numJogosClone--;
                             tempGame = new Game(new LocalDiceRoller(), new AIPlayer(pSelec), new AIPlayer(sSelec), jgam);
+                            tempGame.jogosRestantes = numJogosClone;
                             game.add(tempGame);
                         }
-                        return  true;
+                        return true;
                     }
                 } else { // network game
                     if (locName.getText().length() == 0) {

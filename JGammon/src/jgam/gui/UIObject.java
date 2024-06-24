@@ -155,6 +155,9 @@ public class UIObject {
                     else
                         Game.player2Victories++;
 
+                    if(game.jogosRestantes == 0) {
+                        JOptionPane.showMessageDialog(jgam.getFrame(), "White: " + Game.player1Victories + "\nRed: " + Game.player2Victories, "Game over", JOptionPane.INFORMATION_MESSAGE);
+                    }
                     System.out.println("White: " + Game.player1Victories);
                     System.out.println("Red: " + Game.player2Victories);
                     System.out.println();

@@ -28,9 +28,13 @@ package jgam.game;
 
 import java.io.*;
 
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 import jgam.*;
 import jgam.gui.*;
 import jgam.history.*;
+import jgam.net.JGamProtocolException;
 import jgam.util.*;
 
 /**
@@ -58,7 +62,6 @@ public class Game {
 
     public static int player1Victories = 0;
     public static int player2Victories = 0;
-
     // the current player
     private Player currentPlayer;
 
@@ -113,6 +116,8 @@ public class Game {
     public final static int STATE_GAME_OVER = -1;
     public final static int STATE_WAIT_FOR_DOUBLE_ANSWER = 3;
     public final static int STATE_WAIT_FOR_DICES = 4;
+
+    public int jogosRestantes;
 
 
     /**

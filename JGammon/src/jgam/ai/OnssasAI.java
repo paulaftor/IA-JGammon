@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class OnssasAI implements AI {
+
+    
     public void init() throws Exception {
 
     }
@@ -87,7 +89,7 @@ public class OnssasAI implements AI {
             eval -= 1000.0 * bs.getPoint(2, 1);
 
         int totalPoints = bs.getPoint(player, 25);
-        eval += 50.0 * totalPoints;
+        eval += 500.0 * totalPoints;
 
         return eval;
     }
@@ -115,11 +117,43 @@ public class OnssasAI implements AI {
             return pm.getMoveChain(movimento);
     }
 
+    public boolean vantagemClara(BoardSetup boardSetup) {
+        int player = boardSetup.getPlayerAtMove();
+        int opponent = 3 - player;
+        int checkersInLastHalf = 0;
+        int opponentCheckersInLastHalf = 0;
+
+        for (int i = 1; i < 25; i++) {
+            int numCheckers = boardSetup.getPoint(player, i);
+            int opponentNumCheckers = boardSetup.getPoint(opponent, i);
+
+            if ((player == 1 && i >= 13) || (player == 2 && i <= 12))
+                checkersInLastHalf += numCheckers;
+
+            if ((opponent == 1 && i >= 13) || (opponent == 2 && i <= 12))
+                opponentCheckersInLastHalf += opponentNumCheckers;
+        }
+
+        if (checkersInLastHalf == 15 && opponentCheckersInLastHalf < 12)
+            return true;
+        else
+            return false;
+    }
+
     public int rollOrDouble(BoardSetup boardSetup) throws CannotDecideException {
-        return ROLL;
+        if(vantagemClara(boardSetup)){
+            System.out.println("Vantagem clara encontrada");
+            return DOUBLE;
+        }    
+        else
+            return ROLL;
     }
 
     public int takeOrDrop(BoardSetup boardSetup) throws CannotDecideException {
-        return TAKE;
+        if(vantagemClara(boardSetup)){
+            return TAKE;
+        }    
+        else
+            return DROP;
     }
 }
