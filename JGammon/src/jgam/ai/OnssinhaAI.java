@@ -102,13 +102,11 @@ public class OnssinhaAI implements AI {
     public SingleMove[] makeMoves(BoardSetup bs) throws CannotDecideException {
         int player = bs.getPlayerAtMove();
     
-        // Definir profundidade máxima da busca
         int depth = 3;
         long startTime = System.currentTimeMillis();
-        long timeLimit = 20000; // 1 second time limit
+        long timeLimit = 20000; 
         timeCutoff = startTime + timeLimit;
     
-        // Chamar o algoritmo Minimax com alpha-beta pruning
         double bestEval = Double.NEGATIVE_INFINITY;
         int bestMoveIndex = -1;
     
@@ -118,7 +116,6 @@ public class OnssinhaAI implements AI {
         for (int i = 0; i < moveList.size(); i++) {
             BoardSetup boardSetup = moveList.get(i);
             double evaluation = minimax(boardSetup, depth, -10000000, 10000000, false);
-            System.out.println("Evaluation for this move: " + evaluation);
             if (evaluation > bestEval) {
                 bestEval = evaluation;
                 bestMoveIndex = i;
@@ -139,11 +136,9 @@ public class OnssinhaAI implements AI {
         }
 
         if (System.currentTimeMillis() > timeCutoff) {
-            // Time cutoff reached, return a heuristic evaluation of the current board
             return heuristica(bs);
         }
 
-        // Verificar se é um nó terminal ou atingiu a profundidade máxima
         if (depth == 0 || bs.getPoint(1, 0)==15 || bs.getPoint(2, 0)==15) {
             return heuristica(bs);
         }
@@ -159,7 +154,6 @@ public class OnssinhaAI implements AI {
                 double eval = minimax(child, depth - 1, alpha, beta, false);
                 maxEval = Math.max(maxEval, eval);
                 alpha = Math.max(alpha, eval);
-                System.out.println("Alpha: " + alpha + " Beta: " + beta);
                 if (beta <= alpha) {
                     break; // Poda beta
                 }
@@ -173,7 +167,6 @@ public class OnssinhaAI implements AI {
                 double eval = minimax(child, depth - 1, alpha, beta, true);
                 minEval = Math.min(minEval, eval);
                 beta = Math.min(beta, eval);
-                System.out.println("Alpha 2: " + alpha + " Beta 2: " + beta);
                 if (beta <= alpha) {
                     break; // Poda alpha
                 }
