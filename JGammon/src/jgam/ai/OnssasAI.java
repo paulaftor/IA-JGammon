@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class OnssasAI implements AI {
+
+    
     public void init() throws Exception {
 
     }

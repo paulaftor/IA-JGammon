@@ -42,6 +42,7 @@ import jgam.ai.*;
 import jgam.game.*;
 import jgam.net.*;
 import jgam.util.*;
+import jgam.board.*;
 
 
 /**
@@ -343,10 +344,16 @@ public class NewGameDialog extends JDialog {
                     AI sSelec = selectAI();
 
                     numJogos = Integer.parseInt(JOptionPane.showInputDialog(null, "Digite o numero de jogos:"));
+                    int velocidade;
+                    do {
+                        velocidade = Integer.parseInt(JOptionPane.showInputDialog(null, "Digite a velocidade dos movimentos (1 a 10): "));
+                    } while (velocidade <= 0 || velocidade > 10);
+                    
+                    BoardAnimation.STEPLENGTH = velocidade*25;
+
                     numJogosClone = numJogos;
 
                     if (pSelec != null && sSelec != null) {
-                        int v1 = 0, v2 = 0;
                         for (int i = 0; i < numJogos; i++) {
                             numJogosClone--;
                             tempGame = new Game(new LocalDiceRoller(), new AIPlayer(pSelec), new AIPlayer(sSelec), jgam);
