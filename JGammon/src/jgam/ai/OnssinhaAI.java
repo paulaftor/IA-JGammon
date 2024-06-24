@@ -45,18 +45,18 @@ public class OnssinhaAI implements AI {
             int opponentNumCheckers = bs.getPoint(opponent, i);
 
             if (opponentNumCheckers == 1)
-                eval += 15.0;
+                eval += 80.0;
             else if (opponentNumCheckers == 0)
-                eval += 10.0;
+                eval += 40.0;
             else
-                eval -= 20.0;
+                eval -= 150.0;
 
             if (numCheckers >= 4)
-                eval -= 15.0 * numCheckers;
+                eval -= 30.0 * numCheckers;
             else if (numCheckers >= 2)
-                eval += 30.0;
+                eval += 200.0;
             else if (numCheckers == 1)
-                eval -= 50.0;
+                eval -= 250.0;
 
             if ((player == 1 && i >= 13) || (player == 2 && i <= 12))
                 checkersInLastHalf += numCheckers;
@@ -65,36 +65,36 @@ public class OnssinhaAI implements AI {
                 checkersInFirstSix += numCheckers;
 
             if ((player == 1 && i <= 13) || (player == 2 && i >= 12))
-                eval -= 10.0 * numCheckers;
+                eval -= 20.0 * numCheckers;
             else
-                eval += 10.0 * numCheckers;
+                eval += 20.0 * numCheckers;
         }
 
         if (checkersInLastHalf == 15)
-            eval += 50.0;
+            eval += 1000.0;
         else if (checkersInLastHalf >= 12)
-            eval += 30.0;
+            eval += 400.0;
         else if (checkersInLastHalf >= 9)
-            eval += 20.0;
+            eval += 250.0;
         else if (checkersInLastHalf >= 6)
-            eval += 10.0;
+            eval += 40.0;
         else if (checkersInLastHalf >= 3)
-            eval += 5.0;
+            eval += 15.0;
 
         if (checkersInFirstSix == 0)
-            eval += 60.0;
+            eval += 1000.0;
         else if (checkersInFirstSix == 1)
-            eval -= 70.0;
+            eval -= 500.0;
         else if (checkersInFirstSix >= 2)
-            eval -= 90.0;
+            eval -= 1000.0;
 
         if (player == 1)
-            eval -= 30.0 * bs.getPoint(1, 24);
+            eval -= 1000.0 * bs.getPoint(1, 24);
         else
-            eval -= 30.0 * bs.getPoint(2, 1);
+            eval -= 1000.0 * bs.getPoint(2, 1);
 
         int totalPoints = bs.getPoint(player, 25);
-        eval += 10.0 * totalPoints;
+        eval += 500.0 * totalPoints;
 
         return eval;
     }
@@ -136,10 +136,11 @@ public class OnssinhaAI implements AI {
         }
 
         if (System.currentTimeMillis() > timeCutoff) {
+            System.out.println("cortou tempo");
             return heuristica(bs);
         }
 
-        if (depth == 0 || bs.getPoint(1, 0)==15 || bs.getPoint(2, 0)==15) {
+        if (depth == 0 || bs.getOff(1)==15 || bs.getOff(2)==15) {
             return heuristica(bs);
         }
 
@@ -147,18 +148,26 @@ public class OnssinhaAI implements AI {
         double maxEval = -1000000000;
 
         if (maximizingPlayer) {
-            PossibleMoves pm = new PossibleMoves(bs);
-            List<BoardSetup> moveList = pm.getPossbibleNextSetups();
-    
-            for (BoardSetup child : moveList) {
-                double eval = minimax(child, depth - 1, alpha, beta, false);
-                maxEval = Math.max(maxEval, eval);
-                alpha = Math.max(alpha, eval);
-                if (beta <= alpha) {
-                    break; // Poda beta
+            for(int i=1; i<7; i++){
+                for(int j=1; j<7; j++){
+                    BoardSetup bsCopy = bs;
+                    
+                    PossibleMoves pm = new PossibleMoves(bs);
+                    List<BoardSetup> moveList = pm.getPossbibleNextSetups();
+            
+                    for (BoardSetup child : moveList) {
+                        double eval = minimax(child, depth - 1, alpha, beta, false);
+                        maxEval = Math.max(maxEval, eval);
+                        alpha = Math.max(alpha, eval);
+                        if (beta <= alpha) {
+                            System.out.println("Poda beta");
+                            break; // Poda beta
+                        }
+                    }
+                    //return maxEval;
                 }
             }
-            //return maxEval;
+            
         } else {
             PossibleMoves pm = new PossibleMoves(bs);
             List<BoardSetup> moveList = pm.getPossbibleNextSetups();
@@ -168,9 +177,11 @@ public class OnssinhaAI implements AI {
                 minEval = Math.min(minEval, eval);
                 beta = Math.min(beta, eval);
                 if (beta <= alpha) {
+                    System.out.println("Poda alpha");
                     break; // Poda alpha
                 }
             }
+            
             //return minEval;
         }
 

@@ -150,10 +150,6 @@ public class OnssasAI implements AI {
     }
 
     public int takeOrDrop(BoardSetup boardSetup) throws CannotDecideException {
-        if(vantagemClara(boardSetup)){
-            return TAKE;
-        }    
-        else
-            return DROP;
+        return TAKE;
     }
 }

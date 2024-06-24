@@ -610,6 +610,10 @@ public class Game {
         snapshot = new BoardSnapshot(bs);
     }
 
+    public BoardSetup getBoardSetup() {
+        return snapshot;
+    }
+
     /**
      * use this <i>getter</i> method to query the value of the field <code>player1</code>.
      * @return the value of <code>player1</code>
