@@ -57,6 +57,19 @@ public class PossibleMoves {
         moveChains = allMoves(setup);
     }
 
+    public void AuxPossibleMoves(int i, int j) {
+        this.setup = new BoardSnapshot(setup);
+        int dices[] = {i, j};
+
+        if (dices[0] == dices[1]) {
+            hops.add(dices[0], 4);
+        } else {
+            hops.addAll(dices);
+        }
+
+        moveChains = allMoves(setup);
+    }
+
     public PossibleMoves(BoardSetup setup, IntList hops) {
         this.hops = hops;
         this.setup = new BoardSnapshot(setup);
