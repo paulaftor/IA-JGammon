@@ -112,7 +112,7 @@ public class OnssinhaAI implements AI {
     
         PossibleMoves pm = new PossibleMoves(bs);
         List<BoardSetup> moveList = pm.getPossbibleNextSetups();    
-        int depth = moveList.size() > 12 ? 2 : 3;
+        int depth = moveList.size() > 50 ? 2 : 3;
     
         for (int i = 0; i < moveList.size(); i++) {
             if (System.currentTimeMillis() - startTime > timeLimit - 1000) { 
@@ -158,7 +158,7 @@ public class OnssinhaAI implements AI {
                     System.out.println("poda");
                     break;
                 }
-            }
+        }
             return maxEval;
         } else if (maximizingPlayer[0] == 1) {
             PossibleMoves pm = new PossibleMoves(bsAuxiliar);

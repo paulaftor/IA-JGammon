@@ -149,7 +149,9 @@
 	</target>
 
 	<target name="run" depends="jar">
-		<java jar="JGammon.jar" fork="true"/>
+		<java jar="JGammon.jar" fork="true">
+		<jvmarg value="-Xmx1024m" />
+		</java>
 	</target>
 
 </project>
