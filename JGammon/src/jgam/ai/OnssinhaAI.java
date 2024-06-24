@@ -102,20 +102,24 @@ public class OnssinhaAI implements AI {
     public SingleMove[] makeMoves(BoardSetup bs) throws CannotDecideException {
         int player = bs.getPlayerAtMove();
     
-        int depth = 3;
+        
         long startTime = System.currentTimeMillis();
-        long timeLimit = 20000; 
+        long timeLimit = 4000; 
         timeCutoff = startTime + timeLimit;
     
         double bestEval = Double.NEGATIVE_INFINITY;
         int bestMoveIndex = -1;
     
         PossibleMoves pm = new PossibleMoves(bs);
-        List<BoardSetup> moveList = pm.getPossbibleNextSetups();
+        List<BoardSetup> moveList = pm.getPossbibleNextSetups();    
+        int depth = moveList.size() > 12 ? 2 : 3;
     
         for (int i = 0; i < moveList.size(); i++) {
+            if (System.currentTimeMillis() - startTime > timeLimit - 1000) { 
+                break; 
+            }
             BoardSetup boardSetup = moveList.get(i);
-            double evaluation = minimax(boardSetup, depth, -10000000, 10000000, false);
+            double evaluation = minimax(boardSetup, depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, new int[]{0,0});
             if (evaluation > bestEval) {
                 bestEval = evaluation;
                 bestMoveIndex = i;
@@ -128,66 +132,85 @@ public class OnssinhaAI implements AI {
             return pm.getMoveChain(bestMoveIndex);
         }
     }
+
+    private double minimax(BoardSetup bs, int depth, double alpha, double beta, int[] maximizingPlayer) {
     
-    private double minimax(BoardSetup bs, int depth, double alpha, double beta, boolean maximizingPlayer) {
-        String key = bs.hashCode() + ":" + depth + ":" + maximizingPlayer;
-        if (memoizationMap.containsKey(key)) {
-            return memoizationMap.get(key);
-        }
-
-        if (System.currentTimeMillis() > timeCutoff) {
-            System.out.println("cortou tempo");
+        if (depth == 0 || bs.getOff(1) == 15 || bs.getOff(2) == 15 || System.currentTimeMillis() > timeCutoff) {
+            if(depth==0)
+                System.out.println("Depth 0");
             return heuristica(bs);
         }
-
-        if (depth == 0 || bs.getOff(1)==15 || bs.getOff(2)==15) {
-            return heuristica(bs);
-        }
-
-        double minEval = 1000000000;
-        double maxEval = -1000000000;
-
-        if (maximizingPlayer) {
-            for(int i=1; i<7; i++){
-                for(int j=1; j<7; j++){
-                    BoardSetup bsCopy = bs;
-                    
-                    PossibleMoves pm = new PossibleMoves(bs);
-                    List<BoardSetup> moveList = pm.getPossbibleNextSetups();
-            
-                    for (BoardSetup child : moveList) {
-                        double eval = minimax(child, depth - 1, alpha, beta, false);
-                        maxEval = Math.max(maxEval, eval);
-                        alpha = Math.max(alpha, eval);
-                        if (beta <= alpha) {
-                            System.out.println("Poda beta");
-                            break; // Poda beta
-                        }
-                    }
-                    //return maxEval;
+    
+        double minEval = Double.POSITIVE_INFINITY;
+        double maxEval = Double.NEGATIVE_INFINITY;
+    
+        BoardSetup bsAuxiliar = bs;
+        int[][] combinacoesDados = {{1, 1}, {1, 2}, {1, 3}, {1, 4}, {1, 5}, {1, 6}, {2, 2}, {2, 3}, {2, 4}, {2, 5}, {2, 6}, {3, 3}, {3, 4}, {3, 5}, {3, 6}, {4, 4}, {4, 5}, {4, 6}, {5, 5}, {5, 6}, {6, 6}};
+        if (maximizingPlayer[0] == 0) {
+            PossibleMoves pm = new PossibleMoves(bsAuxiliar);
+            List<BoardSetup> moveList = pm.getPossbibleNextSetups();
+            for (BoardSetup child : moveList) {
+                int[] newMaximizingPlayer = {2, 0};
+                double eval = minimax(child, depth - 1, alpha, beta, newMaximizingPlayer);
+                maxEval = Math.max(maxEval, eval);
+                alpha = Math.max(alpha, eval);
+                if (beta <= alpha || System.currentTimeMillis() > timeCutoff) {
+                    System.out.println("poda");
+                    break;
                 }
             }
-            
-        } else {
-            PossibleMoves pm = new PossibleMoves(bs);
+            return maxEval;
+        } else if (maximizingPlayer[0] == 1) {
+            PossibleMoves pm = new PossibleMoves(bsAuxiliar);
             List<BoardSetup> moveList = pm.getPossbibleNextSetups();
-    
             for (BoardSetup child : moveList) {
-                double eval = minimax(child, depth - 1, alpha, beta, true);
+                int[] newMaximizingPlayer = {2, 1};
+                double eval = minimax(child, depth - 1, alpha, beta, newMaximizingPlayer);
                 minEval = Math.min(minEval, eval);
                 beta = Math.min(beta, eval);
-                if (beta <= alpha) {
-                    System.out.println("Poda alpha");
-                    break; // Poda alpha
+                if (beta <= alpha || System.currentTimeMillis() > timeCutoff) {
+                    System.out.println("poda");
+                    break;
                 }
             }
-            
-            //return minEval;
-        }
+            return minEval;
+        } else {
+            int N = combinacoesDados.length;
+            double sum = 0;
+            double U = Double.POSITIVE_INFINITY;
+            double L = Double.NEGATIVE_INFINITY;
+            double A = N * (alpha - U) + U;
+            double B = N * (beta - L) + L;
 
-        memoizationMap.put(key, (maximizingPlayer ? maxEval : minEval));
-        return maximizingPlayer ? maxEval : minEval;
+            for (int i = 0; i < N; i++) {
+                PossibleMoves pm = new PossibleMoves(bsAuxiliar);
+                pm.AuxPossibleMoves(combinacoesDados[i][0], combinacoesDados[i][1]);
+                List<BoardSetup> moveList = pm.getPossbibleNextSetups();
+                for (BoardSetup child : moveList) {
+                    double AX = Math.max(A, L);
+                    double BX = Math.min(B, U);
+                    double eval = minimax(child, depth - 1, AX, BX, maximizingPlayer[1] == 0 ? new int[]{1, 2} : new int[]{0, 2});
+                    if (combinacoesDados[i][0] == combinacoesDados[i][1]) {
+                        eval *= 1.0 / 36;
+                    } else {
+                        eval *= 1.0 / 18;
+                    }
+                    sum += eval;
+                    if (sum / N <= A) {
+                        return alpha;
+                    }
+                    if (sum / N >= B) {
+                        return beta;
+                    }
+                    A += U - eval;
+                    B += L - eval;
+                }
+            }
+            return sum / N;
+        }
+        
     }
+    
 
     public int rollOrDouble(BoardSetup boardSetup) throws CannotDecideException {
         return ROLL;
