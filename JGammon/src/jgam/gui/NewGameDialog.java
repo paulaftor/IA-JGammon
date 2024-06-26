@@ -349,7 +349,7 @@ public class NewGameDialog extends JDialog {
                         velocidade = Integer.parseInt(JOptionPane.showInputDialog(null, "Digite a velocidade dos movimentos (1 a 10): "));
                     } while (velocidade <= 0 || velocidade > 10);
                     
-                    BoardAnimation.STEPLENGTH = velocidade*25;
+                    BoardAnimation.STEPLENGTH = velocidade*12;
 
                     numJogosClone = numJogos;
 

@@ -60,6 +60,12 @@ public abstract class BoardSetup {
      */
     public abstract int[] getDice();
 
+    public void setDice(int i, int j) {
+        int dado[] = getDice();
+        dado[0]=i;
+        dado[1]=j;
+    }
+
     /**
      * get the number of the player who may make the next move or decision.
      * If this is 0 it is the initial setup and the player to act can be

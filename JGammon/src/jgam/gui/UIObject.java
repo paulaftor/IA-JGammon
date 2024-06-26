@@ -54,6 +54,7 @@ public class UIObject {
     private JGammon jgam;
     private ActionManager actionManager;
     private Game game;
+    private BoardSetup boardSetup;
 
 
     public UIObject(JGammon jgam, Game game) {
@@ -151,9 +152,9 @@ public class UIObject {
                     actionManager.disable("undo");
 
                     if (playerMessage.getOwner().getNumber() == 1)
-                        Game.player1Victories++;
+                        Game.player1Victories += game.getBoardSetup().getDoubleCube();
                     else
-                        Game.player2Victories++;
+                        Game.player2Victories += game.getBoardSetup().getDoubleCube();
 
                     if(game.jogosRestantes == 0) {
                         JOptionPane.showMessageDialog(jgam.getFrame(), "White: " + Game.player1Victories + "\nRed: " + Game.player2Victories, "Game over", JOptionPane.INFORMATION_MESSAGE);
