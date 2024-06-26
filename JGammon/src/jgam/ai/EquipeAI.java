@@ -73,7 +73,7 @@ public class EquipeAI implements AI{
                 eval -= 150.0;
 
             if (numCheckers >= 4)
-                eval -= 30.0 * numCheckers;
+                eval -= 50.0 * numCheckers;
             else if (numCheckers >= 2)
                 eval += 200.0;
             else if (numCheckers == 1)
@@ -102,6 +102,8 @@ public class EquipeAI implements AI{
         else if (checkersInLastHalf >= 3)
             eval += 15.0;
 
+        // MUDAR ISSO AQUI, PODE NÃO FAZER SENTIDO EM ALGUNS CONTEXTOS
+        // PRINCIPALMENTE EM ÍNICIO DE PARTIDA
         if (checkersInFirstSix == 0)
             eval += 1000.0;
         else if (checkersInFirstSix == 1)
@@ -109,13 +111,14 @@ public class EquipeAI implements AI{
         else if (checkersInFirstSix >= 2)
             eval -= 1000.0;
 
+        // 
         if (player == 1)
             eval -= 1000.0 * bs.getPoint(1, 24);
         else
             eval -= 1000.0 * bs.getPoint(2, 1);
 
-        int totalPoints = bs.getPoint(player, 25);
-        eval += 500.0 * totalPoints;
+        int pecasSaidas = bs.getPoint(player, 25);
+        eval += 5000.0 * pecasSaidas;
 
         return eval;
     }
@@ -230,20 +233,20 @@ public class EquipeAI implements AI{
         return bestIndex;
     }
 
-    public boolean vantagemClara(BoardSetup boardSetup) {
-        int player = boardSetup.getPlayerAtMove();
+    public boolean vantagemClara(BoardSetup boardSetup, int player) {
         int opponent = 3 - player;
         int checkersInLastHalf = 0;
         int opponentCheckersInLastHalf = 0;
+        System.out.println("Player: " + player);
 
         for (int i = 1; i < 25; i++) {
             int numCheckers = boardSetup.getPoint(player, i);
             int opponentNumCheckers = boardSetup.getPoint(opponent, i);
 
-            if ((player == 1 && i >= 13) || (player == 2 && i <= 12))
+            if ((player == 1 && i > 12) || (player == 2 && i <= 12))
                 checkersInLastHalf += numCheckers;
 
-            if ((opponent == 1 && i >= 13) || (opponent == 2 && i <= 12))
+            if ((opponent == 1 && i > 12) || (opponent == 2 && i <= 12))
                 opponentCheckersInLastHalf += opponentNumCheckers;
         }
 
@@ -262,6 +265,11 @@ public class EquipeAI implements AI{
      */
     @Override
     public int rollOrDouble(BoardSetup boardSetup) throws CannotDecideException {
+        // int player = boardSetup.getPlayerAtMove();
+        // if(vantagemClara(boardSetup, player))
+        //     return DOUBLE;
+        // else
+        //     return ROLL;
         return ROLL;
     }
 
@@ -275,6 +283,11 @@ public class EquipeAI implements AI{
      */
     @Override
     public int takeOrDrop(BoardSetup boardSetup) throws CannotDecideException {
+        // int opponent = 3-boardSetup.getPlayerAtMove();
+        // if(vantagemClara(boardSetup, opponent))
+        //     return DROP;
+        // else
+        //     return TAKE;
         return TAKE;
     }
 }
