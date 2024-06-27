@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 
 public class OnssasAI implements AI {
-
     
     public void init() throws Exception {
 
@@ -160,7 +159,7 @@ public class OnssasAI implements AI {
     public int rollOrDouble(BoardSetup boardSetup) throws CannotDecideException {
         int player = boardSetup.getPlayerAtMove();
         if(vantagemClara(boardSetup, player)){
-            System.out.println("Vantagem clara encontrada");
+            System.out.println("Vantagem clara encontrada pela " + getName() + ".");
             return DOUBLE;
         }    
         else
@@ -168,12 +167,12 @@ public class OnssasAI implements AI {
     }
 
     public int takeOrDrop(BoardSetup boardSetup) throws CannotDecideException {
-        int player = boardSetup.getPlayerAtMove();
-        int opponent = 3 - player;
-        if(!vantagemClara(boardSetup, opponent)){
-            return TAKE;
+        int opponent = 3-boardSetup.getPlayerAtMove();
+        if(vantagemClara(boardSetup, opponent)){
+            System.out.println("Double recusado pela " + getName() + ".");
+            return DROP;
         }    
         else
-            return DROP;
+            return TAKE;
     }
 }
