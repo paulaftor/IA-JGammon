@@ -103,10 +103,11 @@ public class OnssasAI implements AI {
         else
             eval -= 1000.0 * bs.getPoint(2, 1);
 
-        int totalPoints = bs.getPoint(player, 25);
+        int checkersAtBar = bs.getBar(player);
+        int bearedOffCheckers = bs.getOff(player);
+        int opponentCheckersAtBar = bs.getBar(opponent);
 
-        // Recompensa alta por tirar peças do tabuleiro
-        eval += 5000.0 * totalPoints;
+        eval = eval -5000.0 * checkersAtBar + 1000*bearedOffCheckers + 5000.0 * opponentCheckersAtBar;
 
         return eval;
     }
