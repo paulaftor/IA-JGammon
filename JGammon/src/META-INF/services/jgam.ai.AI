@@ -20,10 +20,8 @@ jgam.ai.Runner_AI
 
 jgam.ai.OnssasAI
 
-jgam.ai.OnssinhaAI
-
 jgam.ai.EquipeAI
 
-jgam.ai.EstrategiaDistribuidaAI
+jgam.ai.Minimax
 
-jgam.ai.ExpectMiniMaxAI
+jgam.ai.MonteCarloAI

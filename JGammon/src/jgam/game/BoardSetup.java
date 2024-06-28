@@ -61,9 +61,8 @@ public abstract class BoardSetup {
     public abstract int[] getDice();
 
     public void setDice(int i, int j) {
-        int dado[] = getDice();
-        dado[0]=i;
-        dado[1]=j;
+        this.getDice()[0]=i;
+        this.getDice()[1]=j;
     }
 
     /**
