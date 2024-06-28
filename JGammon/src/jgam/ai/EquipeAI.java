@@ -65,12 +65,14 @@ public class EquipeAI implements AI{
             int numCheckers = bs.getPoint(player, i);
             int opponentNumCheckers = bs.getPoint(opponent, i);
 
+            /* 
             if (opponentNumCheckers == 1)
                 eval += 80.0;
             else if (opponentNumCheckers == 0)
                 eval += 40.0;
             else
                 eval -= 150.0;
+            */
 
             if (numCheckers >= 4)
                 eval -= 50.0 * numCheckers;
@@ -118,6 +120,8 @@ public class EquipeAI implements AI{
             eval -= 1000.0 * bs.getPoint(2, 1);
 
         int pecasSaidas = bs.getPoint(player, 25);
+        int opponentBearedOffCheckers = bs.getOff(opponent);
+
         eval += 5000.0 * pecasSaidas;
 
         return eval;
@@ -235,22 +239,24 @@ public class EquipeAI implements AI{
 
     public boolean vantagemClara(BoardSetup boardSetup, int player) {
         int opponent = 3 - player;
-        int checkersInLastHalf = 0;
+        int checkersInLastSix = 0;
         int opponentCheckersInLastHalf = 0;
+        int numCheckers = 0;
+        int opponentNumCheckers = 0;
         System.out.println("Player: " + player);
 
-        for (int i = 1; i < 25; i++) {
-            int numCheckers = boardSetup.getPoint(player, i);
-            int opponentNumCheckers = boardSetup.getPoint(opponent, i);
+        for (int i = 0; i <= 25; i++) {
+            numCheckers = boardSetup.getPoint(player, i);
+            opponentNumCheckers = boardSetup.getPoint(opponent, i);
 
-            if ((player == 1 && i > 12) || (player == 2 && i <= 12))
-                checkersInLastHalf += numCheckers;
+            if ((player == 1 && i > 18) || (player == 2 && i <= 6))
+                checkersInLastSix += numCheckers;
 
             if ((opponent == 1 && i > 12) || (opponent == 2 && i <= 12))
                 opponentCheckersInLastHalf += opponentNumCheckers;
         }
 
-        if (checkersInLastHalf == 15 && opponentCheckersInLastHalf < 12)
+        if (checkersInLastSix == 15 && opponentCheckersInLastHalf < 12)
             return true;
         else
             return false;
@@ -265,17 +271,17 @@ public class EquipeAI implements AI{
      */
     @Override
     public int rollOrDouble(BoardSetup boardSetup) throws CannotDecideException {
-        // int player = boardSetup.getPlayerAtMove();
-        // if(vantagemClara(boardSetup, player))
-        //     return DOUBLE;
-        // else
-        //     return ROLL;
-        return ROLL;
+        int player = boardSetup.getPlayerAtMove();
+        if(vantagemClara(boardSetup, player))
+            return DOUBLE;
+        else
+            return ROLL;
+        //return ROLL;
     }
 
     /**
      * given a board and a double offer, take or drop.
-     * Evalutate the player whose turn it is NOT!
+     * Evaluate the player whose turn it is NOT!
      *
      * @param boardSetup BoardSetup
      * @return either TAKE or DROP

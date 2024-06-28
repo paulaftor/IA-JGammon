@@ -12,7 +12,7 @@ public class OnssasAI implements AI {
     public void init() throws Exception {
 
     }
-
+    
     public void dispose() {
 
     }
@@ -38,6 +38,9 @@ public class OnssasAI implements AI {
             int numCheckers = bs.getPoint(player, i);
             int opponentNumCheckers = bs.getPoint(opponent, i);
 
+            // Caso tenha uma peça do oponente na casa, soma 80 pontos
+            // porque é uma peça que pode ser capturada
+            // Caso não tenha peça do oponente, soma 40 pontos
             if (opponentNumCheckers == 1)
                 eval += 80.0;
             else if (opponentNumCheckers == 0)
@@ -45,8 +48,11 @@ public class OnssasAI implements AI {
             else
                 eval -= 150.0;
 
+            // Caso tenha 4 ou mais peças na casa, subtrai 50 pontos por peça
+            // Caso tenha 2 ou 3 peças, soma 200 pontos
+            // Caso tenha 1 peça, subtrai 250 pontos
             if (numCheckers >= 4)
-                eval -= 30.0 * numCheckers;
+                eval -= 50.0 * numCheckers;
             else if (numCheckers >= 2)
                 eval += 200.0;
             else if (numCheckers == 1)
@@ -64,6 +70,11 @@ public class OnssasAI implements AI {
                 eval += 20.0 * numCheckers;
         }
 
+        // Caso tenha 15 peças na última metade do tabuleiro, soma 1000 pontos
+        // Caso tenha 12 ou mais peças, soma 400 pontos
+        // Caso tenha 9 ou mais peças, soma 250 pontos
+        // Caso tenha 6 ou mais peças, soma 40 pontos
+        // Caso tenha 3 ou mais peças, soma 15 pontos
         if (checkersInLastHalf == 15)
             eval += 1000.0;
         else if (checkersInLastHalf >= 12)
@@ -75,6 +86,9 @@ public class OnssasAI implements AI {
         else if (checkersInLastHalf >= 3)
             eval += 15.0;
 
+        // Caso tenha 0 peças nas primeiras 6 casas, soma 1000 pontos
+        // Caso tenha 1 peça, subtrai 500 pontos
+        // Caso tenha 2 ou mais peças, subtrai 1000 pontos
         if (checkersInFirstSix == 0)
             eval += 1000.0;
         else if (checkersInFirstSix == 1)
@@ -82,13 +96,18 @@ public class OnssasAI implements AI {
         else if (checkersInFirstSix >= 2)
             eval -= 1000.0;
 
+        // Faz de tudo pra tirar as duas ultimas pecas
+        // da primeira posicao do tabuleiro para nao atrasa-las
         if (player == 1)
             eval -= 1000.0 * bs.getPoint(1, 24);
         else
             eval -= 1000.0 * bs.getPoint(2, 1);
 
-        int totalPoints = bs.getPoint(player, 25);
-        eval += 500.0 * totalPoints;
+        int checkersAtBar = bs.getBar(player);
+        int bearedOffCheckers = bs.getOff(player);
+        int opponentCheckersAtBar = bs.getBar(opponent);
+
+        eval = eval -5000.0 * checkersAtBar + 1000*bearedOffCheckers + 5000.0 * opponentCheckersAtBar;
 
         return eval;
     }
@@ -98,7 +117,7 @@ public class OnssasAI implements AI {
         int movimento = -1;
 
         PossibleMoves pm = new PossibleMoves(bs);
-        List moveList = pm.getPossbibleNextSetups();
+        List<PossibleMoves> moveList = pm.getPossbibleNextSetups();
 
         int i = 0;
         for (Iterator iter = moveList.iterator(); iter.hasNext(); i++) {
