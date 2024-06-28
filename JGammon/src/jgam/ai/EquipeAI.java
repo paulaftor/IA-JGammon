@@ -53,7 +53,7 @@ public class EquipeAI implements AI{
         return "IA implementada com expectiminimax";
     }
 
-    public double heuristica(BoardSetup bs, int player) {
+    private double heuristica(BoardSetup bs, int player) {
         double eval = 0.0;
 
         int opponent = 3 - player;
@@ -65,15 +65,19 @@ public class EquipeAI implements AI{
             int numCheckers = bs.getPoint(player, i);
             int opponentNumCheckers = bs.getPoint(opponent, i);
 
-            /* 
+            // Caso tenha uma peça do oponente na casa, soma 80 pontos
+            // porque é uma peça que pode ser capturada
+            // Caso não tenha peça do oponente, soma 40 pontos
             if (opponentNumCheckers == 1)
                 eval += 80.0;
             else if (opponentNumCheckers == 0)
                 eval += 40.0;
             else
                 eval -= 150.0;
-            */
 
+            // Caso tenha 4 ou mais peças na casa, subtrai 50 pontos por peça
+            // Caso tenha 2 ou 3 peças, soma 200 pontos
+            // Caso tenha 1 peça, subtrai 250 pontos
             if (numCheckers >= 4)
                 eval -= 50.0 * numCheckers;
             else if (numCheckers >= 2)
@@ -93,6 +97,11 @@ public class EquipeAI implements AI{
                 eval += 20.0 * numCheckers;
         }
 
+        // Caso tenha 15 peças na última metade do tabuleiro, soma 1000 pontos
+        // Caso tenha 12 ou mais peças, soma 400 pontos
+        // Caso tenha 9 ou mais peças, soma 250 pontos
+        // Caso tenha 6 ou mais peças, soma 40 pontos
+        // Caso tenha 3 ou mais peças, soma 15 pontos
         if (checkersInLastHalf == 15)
             eval += 1000.0;
         else if (checkersInLastHalf >= 12)
@@ -104,8 +113,9 @@ public class EquipeAI implements AI{
         else if (checkersInLastHalf >= 3)
             eval += 15.0;
 
-        // MUDAR ISSO AQUI, PODE NÃO FAZER SENTIDO EM ALGUNS CONTEXTOS
-        // PRINCIPALMENTE EM ÍNICIO DE PARTIDA
+        // Caso tenha 0 peças nas primeiras 6 casas, soma 1000 pontos
+        // Caso tenha 1 peça, subtrai 500 pontos
+        // Caso tenha 2 ou mais peças, subtrai 1000 pontos
         if (checkersInFirstSix == 0)
             eval += 1000.0;
         else if (checkersInFirstSix == 1)
@@ -113,16 +123,18 @@ public class EquipeAI implements AI{
         else if (checkersInFirstSix >= 2)
             eval -= 1000.0;
 
-        // 
+        // Faz de tudo pra tirar as duas ultimas pecas
+        // da primeira posicao do tabuleiro para nao atrasa-las
         if (player == 1)
             eval -= 1000.0 * bs.getPoint(1, 24);
         else
             eval -= 1000.0 * bs.getPoint(2, 1);
 
-        int pecasSaidas = bs.getPoint(player, 25);
-        int opponentBearedOffCheckers = bs.getOff(opponent);
+        int checkersAtBar = bs.getBar(player);
+        int bearedOffCheckers = bs.getOff(player);
+        int opponentCheckersAtBar = bs.getBar(opponent);
 
-        eval += 5000.0 * pecasSaidas;
+        eval += 1000*bearedOffCheckers + 200.0 * opponentCheckersAtBar;
 
         return eval;
     }

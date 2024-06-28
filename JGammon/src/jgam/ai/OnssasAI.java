@@ -107,7 +107,7 @@ public class OnssasAI implements AI {
         int bearedOffCheckers = bs.getOff(player);
         int opponentCheckersAtBar = bs.getBar(opponent);
 
-        eval = eval -5000.0 * checkersAtBar + 1000*bearedOffCheckers + 5000.0 * opponentCheckersAtBar;
+        eval += 1000*bearedOffCheckers + 5000.0 * opponentCheckersAtBar;
 
         return eval;
     }
