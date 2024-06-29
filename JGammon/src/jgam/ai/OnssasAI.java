@@ -137,21 +137,23 @@ public class OnssasAI implements AI {
 
     public boolean vantagemClara(BoardSetup boardSetup, int player) {
         int opponent = 3 - player;
-        int checkersInLastHalf = 0;
+        int checkersInLastSix = 0;
         int opponentCheckersInLastHalf = 0;
+        int playerCheckers = 0;
+        int opponentCheckers = 0;
 
-        for (int i = 1; i < 25; i++) {
-            int numCheckers = boardSetup.getPoint(player, i);
-            int opponentNumCheckers = boardSetup.getPoint(opponent, i);
+        for (int i = 0; i <= 25; i++) {
+            playerCheckers = boardSetup.getPoint(player, i);
+            opponentCheckers = boardSetup.getPoint(opponent, i);
 
-            if ((player == 1 && i >= 13) || (player == 2 && i <= 12))
-                checkersInLastHalf += numCheckers;
+            if ((player == 2 && i > 18) || (player == 1 && i <= 6))
+                checkersInLastSix += playerCheckers;
 
-            if ((opponent == 1 && i >= 13) || (opponent == 2 && i <= 12))
-                opponentCheckersInLastHalf += opponentNumCheckers;
+            if ((opponent == 1 && i > 12) || (opponent == 2 && i <= 12))
+                opponentCheckersInLastHalf += opponentCheckers;
         }
 
-        if (checkersInLastHalf == 15 && opponentCheckersInLastHalf < 12)
+        if (checkersInLastSix == 15 && opponentCheckersInLastHalf < 12)
             return true;
         else
             return false;
@@ -160,7 +162,6 @@ public class OnssasAI implements AI {
     public int rollOrDouble(BoardSetup boardSetup) throws CannotDecideException {
         int player = boardSetup.getPlayerAtMove();
         if(vantagemClara(boardSetup, player)){
-            System.out.println("Vantagem clara encontrada pela " + getName() + ".");
             return DOUBLE;
         }    
         else
@@ -170,7 +171,6 @@ public class OnssasAI implements AI {
     public int takeOrDrop(BoardSetup boardSetup) throws CannotDecideException {
         int opponent = 3-boardSetup.getPlayerAtMove();
         if(vantagemClara(boardSetup, opponent)){
-            System.out.println("Double recusado pela " + getName() + ".");
             return DROP;
         }    
         else

@@ -62,39 +62,39 @@ public class EquipeAI implements AI{
         int checkersInFirstSix = 0;
 
         for (int i = 1; i < 25; i++) {
-            int numCheckers = bs.getPoint(player, i);
-            int opponentNumCheckers = bs.getPoint(opponent, i);
+            int playerCheckers = bs.getPoint(player, i);
+            int opponentCheckers = bs.getPoint(opponent, i);
 
             // Caso tenha uma peça do oponente na casa, soma 80 pontos
             // porque é uma peça que pode ser capturada
             // Caso não tenha peça do oponente, soma 40 pontos
-            if (opponentNumCheckers == 1)
-                eval += 80.0;
-            else if (opponentNumCheckers == 0)
-                eval += 40.0;
-            else
-                eval -= 150.0;
+            //if (opponentCheckers == 1)
+            //    eval += 80.0;
+            //else if (opponentCheckers == 0)
+            //    eval += 40.0;
+            //else
+            //    eval -= 150.0;
 
             // Caso tenha 4 ou mais peças na casa, subtrai 50 pontos por peça
             // Caso tenha 2 ou 3 peças, soma 200 pontos
             // Caso tenha 1 peça, subtrai 250 pontos
-            if (numCheckers >= 4)
-                eval -= 50.0 * numCheckers;
-            else if (numCheckers >= 2)
+            if (playerCheckers >= 4)
+                eval -= 50.0 * playerCheckers;
+            else if (playerCheckers >= 2)
                 eval += 200.0;
-            else if (numCheckers == 1)
+            else if (playerCheckers == 1) //&& !checkersCanBeAlone)
                 eval -= 250.0;
 
             if ((player == 1 && i >= 13) || (player == 2 && i <= 12))
-                checkersInLastHalf += numCheckers;
+                checkersInLastHalf += playerCheckers;
 
             if ((player == 1 && i <= 6) || (player == 2 && i >= 19))
-                checkersInFirstSix += numCheckers;
+                checkersInFirstSix += playerCheckers;
 
             if ((player == 1 && i <= 13) || (player == 2 && i >= 12))
-                eval -= 20.0 * numCheckers;
+                eval -= 20.0 * playerCheckers;
             else
-                eval += 20.0 * numCheckers;
+                eval += 20.0 * playerCheckers;
         }
 
         // Caso tenha 15 peças na última metade do tabuleiro, soma 1000 pontos
@@ -102,6 +102,9 @@ public class EquipeAI implements AI{
         // Caso tenha 9 ou mais peças, soma 250 pontos
         // Caso tenha 6 ou mais peças, soma 40 pontos
         // Caso tenha 3 ou mais peças, soma 15 pontos
+        // Ajuda a manter as peças na última metade do tabuleiro
+        // e a mandar uma peça comida para a última metade de forma
+        // mais rápida.
         if (checkersInLastHalf == 15)
             eval += 1000.0;
         else if (checkersInLastHalf >= 12)
@@ -116,9 +119,10 @@ public class EquipeAI implements AI{
         // Caso tenha 0 peças nas primeiras 6 casas, soma 1000 pontos
         // Caso tenha 1 peça, subtrai 500 pontos
         // Caso tenha 2 ou mais peças, subtrai 1000 pontos
-        if (checkersInFirstSix == 0)
-            eval += 1000.0;
-        else if (checkersInFirstSix == 1)
+        // if (checkersInFirstSix == 0)
+        //     eval += 1000.0;
+        // else 
+        if (checkersInFirstSix == 1)
             eval -= 500.0;
         else if (checkersInFirstSix >= 2)
             eval -= 1000.0;
@@ -134,54 +138,13 @@ public class EquipeAI implements AI{
         int bearedOffCheckers = bs.getOff(player);
         int opponentCheckersAtBar = bs.getBar(opponent);
 
-        eval += 1000*bearedOffCheckers + 200.0 * opponentCheckersAtBar;
+        // Para o late game, utilidade máxima por peças fora do tabuleiro,
+        // afinal, é o objetivo do jogo
+        eval += 1000 * bearedOffCheckers + 200.0 * opponentCheckersAtBar;
 
         return eval;
     }
-
-    /**
-     * given a board make decide which moves to make.
-     * There may not be any dice values left after call to this function.
-     *
-     * @param boardSetup BoardSetup to evaluate
-     * @return SingleMove[] a complete set of moves.
-     * @throws CannotDecideException if the AI cannot decide which moves to make
-     */
-
-    double heuristicaAlternativa(BoardSetup boardSetup) {
-      double returnValue = 0.0;
-      int player = boardSetup.getPlayerAtMove();
-      int opponent = 3 - player;
-
-      for (int i = 1; i <= 24; i++) {
-        int checkersPoint = boardSetup.getPoint(player, i);
-
-        if (checkersPoint >= 3) {
-          returnValue -= 75.0;
-        }
-
-        else if (checkersPoint == 1){
-          returnValue -= 25.0;
-        }
-
-        else
-            returnValue += 25.0;
-      }
-
-      if (boardSetup.getPoint(opponent, 0) >= 1)
-        returnValue += 100.0;
-
-      if (boardSetup.getPoint(player, 0) >= 1) 
-        returnValue -= 50.0;
-
-      int point = boardSetup.getPoint(player, 25);
-      returnValue += point * 50.0; 
-
-      point = boardSetup.getPoint(opponent, 25);
-      returnValue -= point * 50.0;
-
-      return returnValue;
-    }
+ 
 
     //Etapa de min
     double min(BoardSetup boardSetup, int player) {
@@ -253,22 +216,21 @@ public class EquipeAI implements AI{
         int opponent = 3 - player;
         int checkersInLastSix = 0;
         int opponentCheckersInLastHalf = 0;
-        int numCheckers = 0;
-        int opponentNumCheckers = 0;
-        System.out.println("Player: " + player);
+        int playerCheckers = 0;
+        int opponentCheckers = 0;
 
         for (int i = 0; i <= 25; i++) {
-            numCheckers = boardSetup.getPoint(player, i);
-            opponentNumCheckers = boardSetup.getPoint(opponent, i);
+            playerCheckers = boardSetup.getPoint(player, i);
+            opponentCheckers = boardSetup.getPoint(opponent, i);
 
-            if ((player == 1 && i > 18) || (player == 2 && i <= 6))
-                checkersInLastSix += numCheckers;
+            if ((player == 2 && i > 18) || (player == 1 && i <= 6) || (player == 1))
+                checkersInLastSix += playerCheckers;
 
-            if ((opponent == 1 && i > 12) || (opponent == 2 && i <= 12))
-                opponentCheckersInLastHalf += opponentNumCheckers;
+            if ((opponent == 1 && i > 12) || (opponent == 2 && i <= 12 && i > 0))
+                opponentCheckersInLastHalf += opponentCheckers;
         }
 
-        if (checkersInLastSix == 15 && opponentCheckersInLastHalf < 12)
+        if (checkersInLastSix == 15 && opponentCheckersInLastHalf < 14)
             return true;
         else
             return false;
@@ -301,11 +263,10 @@ public class EquipeAI implements AI{
      */
     @Override
     public int takeOrDrop(BoardSetup boardSetup) throws CannotDecideException {
-        // int opponent = 3-boardSetup.getPlayerAtMove();
-        // if(vantagemClara(boardSetup, opponent))
-        //     return DROP;
-        // else
-        //     return TAKE;
-        return TAKE;
+        int opponent = 3-boardSetup.getPlayerAtMove();
+        if(vantagemClara(boardSetup, opponent))
+            return DROP;
+        else
+            return TAKE;
     }
 }

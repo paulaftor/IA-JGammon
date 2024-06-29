@@ -152,11 +152,9 @@ public class UIObject {
                     actionManager.disable("undo");
 
                     if (playerMessage.getOwner().getNumber() == 1)
-                        Game.player1Victories++;
-                        // += game.getBoardSetup().getDoubleCube();
+                        Game.player1Victories += game.getBoardSetup().getDoubleCube();
                     else
-                        Game.player2Victories++;
-                        // += game.getBoardSetup().getDoubleCube();
+                        Game.player2Victories += game.getBoardSetup().getDoubleCube();
 
                     if(game.jogosRestantes == 0) {
                         JOptionPane.showMessageDialog(jgam.getFrame(), "White: " + Game.player1Victories + "\nRed: " + Game.player2Victories, "Game over", JOptionPane.INFORMATION_MESSAGE);
