@@ -18,10 +18,6 @@ jgam.ai.Aggressive_AI
 
 jgam.ai.Runner_AI
 
-jgam.ai.OnssasAI
+jgam.ai.EquipeHeuristicaAI
 
-jgam.ai.EquipeAI
-
-jgam.ai.Minimax
-
-jgam.ai.MonteCarloAI
+jgam.ai.EquipeMinimaxAI
