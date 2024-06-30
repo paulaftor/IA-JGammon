@@ -65,16 +65,6 @@ public class EquipeMinimaxAI implements AI{
             int playerCheckers = bs.getPoint(player, i);
             int opponentCheckers = bs.getPoint(opponent, i);
 
-            // Caso tenha uma peça do oponente na casa, soma 80 pontos
-            // porque é uma peça que pode ser capturada
-            // Caso não tenha peça do oponente, soma 40 pontos
-            //if (opponentCheckers == 1)
-            //    eval += 80.0;
-            //else if (opponentCheckers == 0)
-            //    eval += 40.0;
-            //else
-            //    eval -= 150.0;
-
             // Caso tenha 4 ou mais peças na casa, subtrai 50 pontos por peça
             // Caso tenha 2 ou 3 peças, soma 200 pontos
             // Caso tenha 1 peça, subtrai 250 pontos
@@ -116,12 +106,8 @@ public class EquipeMinimaxAI implements AI{
         else if (checkersInLastHalf >= 3)
             eval += 15.0;
 
-        // Caso tenha 0 peças nas primeiras 6 casas, soma 1000 pontos
-        // Caso tenha 1 peça, subtrai 500 pontos
+        // Caso tenha 1 peça nas 6 primeiras casas, subtrai 500 pontos
         // Caso tenha 2 ou mais peças, subtrai 1000 pontos
-        // if (checkersInFirstSix == 0)
-        //     eval += 1000.0;
-        // else 
         if (checkersInFirstSix == 1)
             eval -= 500.0;
         else if (checkersInFirstSix >= 2)
@@ -241,8 +227,18 @@ public class EquipeMinimaxAI implements AI{
         int diferencaOff = boardSetup.getOff(player) - boardSetup.getOff(opponent);
         int diferencaPertoOff = checkersPertoOff - opponentCheckersPertoOff;
         int diferencaLongeOff = opponentCheckersLongeOff - checkersLongeOff;
-        if (diferencaOff > 4 || (diferencaPertoOff > 4 && checkersPertoOff > 10) || diferencaLongeOff > 3)
+        if (diferencaOff > 4){
+            System.out.println("diferencaOff > 4");
             return true;
+        }
+        else if(diferencaPertoOff > 4 && checkersPertoOff > 10){
+            System.out.println("diferencaPertoOff > 4 && checkersPertoOff > 10");
+            return true;
+        }
+        else if(diferencaLongeOff > 3){
+            System.out.println("diferencaLongeOff > 3");
+            return true;
+        }
         else
             return false;
     }
@@ -257,6 +253,7 @@ public class EquipeMinimaxAI implements AI{
     @Override
     public int rollOrDouble(BoardSetup boardSetup) throws CannotDecideException {
         int player = boardSetup.getPlayerAtMove();
+        System.out.println("Player: " + player);
         if(vantagemClara(boardSetup, player))
             return DOUBLE;
         else
@@ -274,7 +271,8 @@ public class EquipeMinimaxAI implements AI{
      */
     @Override
     public int takeOrDrop(BoardSetup boardSetup) throws CannotDecideException {
-        int opponent = 3-boardSetup.getPlayerAtMove();
+        int opponent = boardSetup.getPlayerAtMove();
+        System.out.println("Opponent: " + opponent);
         if(vantagemClara(boardSetup, opponent))
             return DROP;
         else

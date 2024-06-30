@@ -38,16 +38,6 @@ public class EquipeHeuristicaAI implements AI {
             int numCheckers = bs.getPoint(player, i);
             int opponentNumCheckers = bs.getPoint(opponent, i);
 
-            // Caso tenha uma peça do oponente na casa, soma 80 pontos
-            // porque é uma peça que pode ser capturada
-            // Caso não tenha peça do oponente, soma 40 pontos
-            if (opponentNumCheckers == 1)
-                eval += 80.0;
-            else if (opponentNumCheckers == 0)
-                eval += 40.0;
-            else
-                eval -= 150.0;
-
             // Caso tenha 4 ou mais peças na casa, subtrai 50 pontos por peça
             // Caso tenha 2 ou 3 peças, soma 200 pontos
             // Caso tenha 1 peça, subtrai 250 pontos
@@ -86,12 +76,9 @@ public class EquipeHeuristicaAI implements AI {
         else if (checkersInLastHalf >= 3)
             eval += 15.0;
 
-        // Caso tenha 0 peças nas primeiras 6 casas, soma 1000 pontos
-        // Caso tenha 1 peça, subtrai 500 pontos
+        // Caso tenha 1 peça nas 6 primeiras casas, subtrai 500 pontos
         // Caso tenha 2 ou mais peças, subtrai 1000 pontos
-        if (checkersInFirstSix == 0)
-            eval += 1000.0;
-        else if (checkersInFirstSix == 1)
+        if (checkersInFirstSix == 1)
             eval -= 500.0;
         else if (checkersInFirstSix >= 2)
             eval -= 1000.0;
@@ -135,25 +122,40 @@ public class EquipeHeuristicaAI implements AI {
             return pm.getMoveChain(movimento);
     }
 
-    public boolean vantagemClara(BoardSetup boardSetup, int player) {
+     public boolean vantagemClara(BoardSetup boardSetup, int player) {
         int opponent = 3 - player;
-        int checkersInLastSix = 0;
-        int opponentCheckersInLastHalf = 0;
+        int checkersPertoOff = 0;
+        int opponentCheckersPertoOff = 0;
         int playerCheckers = 0;
         int opponentCheckers = 0;
+        int checkersLongeOff = 0;
+        int opponentCheckersLongeOff = 0;
 
         for (int i = 0; i <= 25; i++) {
             playerCheckers = boardSetup.getPoint(player, i);
             opponentCheckers = boardSetup.getPoint(opponent, i);
 
-            if ((player == 2 && i > 18) || (player == 1 && i <= 6))
-                checkersInLastSix += playerCheckers;
+            if ((player == 1 && (i <= 12 && i>0)) || (player == 2 && (i >= 13 && i<25)))
+                checkersLongeOff += playerCheckers;
+            
+            if ((opponentCheckersLongeOff == 1 && (i <= 12 && i>0)) || (opponentCheckersLongeOff == 2 && (i >= 13 && i<25)))
+                opponentCheckersLongeOff += playerCheckers;
 
-            if ((opponent == 1 && i > 12) || (opponent == 2 && i <= 12))
-                opponentCheckersInLastHalf += opponentCheckers;
+            if ((player == 1 && i > 18 && i<25) || (player == 2 && i <= 6 && i>0))
+                checkersPertoOff += playerCheckers;
+
+            if ((opponent == 1 && i > 18 && i<25) || (opponent == 2 && i <= 6 && i>0))
+                opponentCheckersPertoOff += opponentCheckers;
         }
 
-        if (checkersInLastSix == 15 && opponentCheckersInLastHalf < 12)
+        checkersLongeOff += boardSetup.getBar(player);
+        opponentCheckersLongeOff += boardSetup.getBar(opponent);
+        checkersPertoOff += boardSetup.getOff(player);
+        opponentCheckersPertoOff += boardSetup.getOff(opponent);
+        int diferencaOff = boardSetup.getOff(player) - boardSetup.getOff(opponent);
+        int diferencaPertoOff = checkersPertoOff - opponentCheckersPertoOff;
+        int diferencaLongeOff = opponentCheckersLongeOff - checkersLongeOff;
+        if (diferencaOff > 4 || (diferencaPertoOff > 4 && checkersPertoOff > 10) || diferencaLongeOff > 3)
             return true;
         else
             return false;
