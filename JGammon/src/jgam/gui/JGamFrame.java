@@ -33,6 +33,7 @@ import javax.swing.*;
 
 import jgam.*;
 import jgam.board.*;
+import jgam.game.Game;
 import jgam.game.*;
 import jgam.util.*;
 
@@ -78,6 +79,8 @@ public class JGamFrame extends JFrame implements ActionListener {
     private JButton buttonHelp = new JButton();
 
     private JButton buttonSave = new JButton();
+
+    private JButton buttonRestartPoints = new JButton();
 
     private JMenuBar jMenuBar = new JMenuBar();
 
@@ -251,6 +254,7 @@ public class JGamFrame extends JFrame implements ActionListener {
         actionManager.subscribeHandler("close", jGam);
         actionManager.subscribeHandler("chat", jGam);
         actionManager.subscribeHandler("demo", jGam);
+        actionManager.subscribeHandler("restart", this);
         actionManager.subscribeHandler("turnboard", this);
         actionManager.subscribeHandler("swapcolors", this);
         actionManager.subscribeHandler("flipboard", this);
@@ -307,6 +311,8 @@ public class JGamFrame extends JFrame implements ActionListener {
         actionManager.add(buttonHelp, "help");
         buttonHelp.setIcon(helpIcon);
         buttonHelp.setToolTipText(msg.getString("help"));
+        actionManager.add(buttonRestartPoints, "restart");
+        buttonRestartPoints.setText("Restart Points");
         buttonSave.setToolTipText(msg.getString("saveboard"));
         actionManager.add(buttonSave, "saveboard");
         buttonSave.setIcon(saveIcon);
@@ -396,6 +402,7 @@ public class JGamFrame extends JFrame implements ActionListener {
         jToolBarTop.add(buttonDouble);
         jToolBarTop.add(component2);
         jToolBarTop.add(buttonHelp);
+        jToolBarTop.add(buttonRestartPoints);
         jToolBarTop.add(component4);
         jToolBarTop.add(label);
         jToolBarTop.add(buttonRoll);
@@ -625,7 +632,16 @@ public class JGamFrame extends JFrame implements ActionListener {
         } else if(com.equals("turnboard"))     {
             board.toggleTurn();
         } else if(com.equals("flipboard")) {
-            board.toggleLeftRight();    
+            board.toggleLeftRight();  
+        } else if(com.equals("restart")) {
+            Game.player1Victories = 0;
+            Game.player2Victories = 0;
+            Game.player1Points = 0;
+            Game.player2Points = 0;
+            System.out.println("PONTOS REINICIADOS");
+            System.out.println("White: " + Game.player1Victories);
+            System.out.println("Red: " + Game.player2Victories);
+            System.out.println("");
         } else {
             throw new IllegalArgumentException("Unknown command: " + com + ";" + e);
         }
