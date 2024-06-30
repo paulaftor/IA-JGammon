@@ -13,7 +13,7 @@ import jgam.game.BoardSetup;
 import jgam.game.PossibleMoves;
 import jgam.game.SingleMove;
 
-public class EquipeAI implements AI{
+public class EquipeMinimaxAI implements AI{
         /**
      * initialize this instance. Is called before it is used to
      * make decisions.
@@ -50,7 +50,7 @@ public class EquipeAI implements AI{
      */
     @Override
     public String getDescription() {
-        return "IA implementada com expectiminimax";
+        return "IA da equipe - expectiminimax";
     }
 
     private double heuristica(BoardSetup bs, int player) {
@@ -161,11 +161,7 @@ public class EquipeAI implements AI{
                 for (Iterator iter = list.iterator(); iter.hasNext(); index++) {
                     BoardSetup setup = (BoardSetup) iter.next();
                     double value = heuristica(setup, player);
-
-                    if (dado1 == dado2)
-                        value /= 36;
-                    else 
-                        value /= 18;
+                    value = dado1 == dado2 ? value / 36 : value / 18;
 
                     if (value > bestValue)
                         bestValue = value;

@@ -7,7 +7,7 @@ import jgam.game.SingleMove;
 import java.util.Iterator;
 import java.util.List;
 
-public class OnssasAI implements AI {
+public class EquipeHeuristicaAI implements AI {
     
     public void init() throws Exception {
 
@@ -18,11 +18,11 @@ public class OnssasAI implements AI {
     }
 
     public String getName() {
-        return "Onssas AI";
+        return "Equipe AI";
     }
 
     public String getDescription() {
-        return "Onssas' first AI attempt";
+        return "IA da equipe - avaliação heurística";
     }
 
     private double heuristica(BoardSetup bs) {

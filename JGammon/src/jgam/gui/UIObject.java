@@ -151,13 +151,18 @@ public class UIObject {
                     actionManager.disable("giveup");
                     actionManager.disable("undo");
 
-                    if (playerMessage.getOwner().getNumber() == 1)
-                        Game.player1Victories += game.getBoardSetup().getDoubleCube();
-                    else
-                        Game.player2Victories += game.getBoardSetup().getDoubleCube();
-
+                    if (playerMessage.getOwner().getNumber() == 1){
+                        Game.player1Victories++;
+                        Game.player1Points += game.getBoardSetup().getDoubleCube();
+                    }
+                    else{
+                        Game.player2Victories++;
+                        Game.player2Points += game.getBoardSetup().getDoubleCube();
+                    }
                     if(game.jogosRestantes == 0) {
-                        JOptionPane.showMessageDialog(jgam.getFrame(), "White: " + Game.player1Victories + "\nRed: " + Game.player2Victories, "Game over", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(jgam.getFrame(), 
+                        "White: " + Game.player1Victories + " ("+Game.player1Points+" points)\nRed: " + Game.player2Victories + " ("+Game.player2Points+" points)",
+                        "Game over", JOptionPane.INFORMATION_MESSAGE);
                     }
                     System.out.println("White: " + Game.player1Victories);
                     System.out.println("Red: " + Game.player2Victories);

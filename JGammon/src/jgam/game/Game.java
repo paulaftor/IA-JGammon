@@ -62,6 +62,8 @@ public class Game {
 
     public static int player1Victories = 0;
     public static int player2Victories = 0;
+    public static int player1Points = 0;
+    public static int player2Points = 0;
     // the current player
     private Player currentPlayer;
 
