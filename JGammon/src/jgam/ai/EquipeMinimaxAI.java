@@ -210,23 +210,38 @@ public class EquipeMinimaxAI implements AI{
 
     public boolean vantagemClara(BoardSetup boardSetup, int player) {
         int opponent = 3 - player;
-        int checkersInLastSix = 0;
-        int opponentCheckersInLastHalf = 0;
+        int checkersPertoOff = 0;
+        int opponentCheckersPertoOff = 0;
         int playerCheckers = 0;
         int opponentCheckers = 0;
+        int checkersLongeOff = 0;
+        int opponentCheckersLongeOff = 0;
 
         for (int i = 0; i <= 25; i++) {
             playerCheckers = boardSetup.getPoint(player, i);
             opponentCheckers = boardSetup.getPoint(opponent, i);
 
-            if ((player == 2 && i > 18) || (player == 1 && i <= 6) || (player == 1))
-                checkersInLastSix += playerCheckers;
+            if ((player == 1 && (i <= 12 && i>0)) || (player == 2 && (i >= 13 && i<25)))
+                checkersLongeOff += playerCheckers;
+            
+            if ((opponentCheckersLongeOff == 1 && (i <= 12 && i>0)) || (opponentCheckersLongeOff == 2 && (i >= 13 && i<25)))
+                opponentCheckersLongeOff += playerCheckers;
 
-            if ((opponent == 1 && i > 12) || (opponent == 2 && i <= 12 && i > 0))
-                opponentCheckersInLastHalf += opponentCheckers;
+            if ((player == 1 && i > 18 && i<25) || (player == 2 && i <= 6 && i>0))
+                checkersPertoOff += playerCheckers;
+
+            if ((opponent == 1 && i > 18 && i<25) || (opponent == 2 && i <= 6 && i>0))
+                opponentCheckersPertoOff += opponentCheckers;
         }
 
-        if (checkersInLastSix == 15 && opponentCheckersInLastHalf < 14)
+        checkersLongeOff += boardSetup.getBar(player);
+        opponentCheckersLongeOff += boardSetup.getBar(opponent);
+        checkersPertoOff += boardSetup.getOff(player);
+        opponentCheckersPertoOff += boardSetup.getOff(opponent);
+        int diferencaOff = boardSetup.getOff(player) - boardSetup.getOff(opponent);
+        int diferencaPertoOff = checkersPertoOff - opponentCheckersPertoOff;
+        int diferencaLongeOff = opponentCheckersLongeOff - checkersLongeOff;
+        if (diferencaOff > 4 || (diferencaPertoOff > 4 && checkersPertoOff > 10) || diferencaLongeOff > 3)
             return true;
         else
             return false;
