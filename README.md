@@ -1,7 +1,9 @@
 # IA-JGammon
 
 Para executar o código, basta entrar na pasta JGammon e executar o comando
-**_ant run_**
+```sh
+ant run
+```
 
 Caso ainda não tenha o ant instalado, siga o passo a passo para seu sistema operacional:
 
