@@ -248,7 +248,7 @@ public class EquipeMinimaxAI implements AI{
      */
     @Override
     public int takeOrDrop(BoardSetup boardSetup) throws CannotDecideException {
-        int opponent = 3-boardSetup.getPlayerAtMove();
+        int opponent = boardSetup.getPlayerAtMove();
         if(vantagemClara(boardSetup, opponent))
             return DROP;
         else

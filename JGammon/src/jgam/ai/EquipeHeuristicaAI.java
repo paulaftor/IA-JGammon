@@ -25,75 +25,58 @@ public class EquipeHeuristicaAI implements AI {
         return "IA da equipe - avaliação heurística";
     }
 
-    private double heuristica(BoardSetup bs) {
+    private double heuristica(BoardSetup bs, int player) {
         double eval = 0.0;
-
-        int player = bs.getPlayerAtMove();
         int opponent = 3 - player;
 
-        int checkersInLastHalf = 0;
-        int checkersInFirstSix = 0;
+        int checkersProximasOff = 0;
+        int checkersDistantesOff = 0;
 
         for (int i = 1; i < 25; i++) {
-            int numCheckers = bs.getPoint(player, i);
-            int opponentNumCheckers = bs.getPoint(opponent, i);
-
-            // Caso tenha uma peça do oponente na casa, soma 80 pontos
-            // porque é uma peça que pode ser capturada
-            // Caso não tenha peça do oponente, soma 40 pontos
-            if (opponentNumCheckers == 1)
-                eval += 80.0;
-            else if (opponentNumCheckers == 0)
-                eval += 40.0;
-            else
-                eval -= 150.0;
+            int playerCheckers = bs.getPoint(player, i);
+            //int opponentCheckers = bs.getPoint(opponent, i);
 
             // Caso tenha 4 ou mais peças na casa, subtrai 50 pontos por peça
             // Caso tenha 2 ou 3 peças, soma 200 pontos
             // Caso tenha 1 peça, subtrai 250 pontos
-            if (numCheckers >= 4)
-                eval -= 50.0 * numCheckers;
-            else if (numCheckers >= 2)
+            if (playerCheckers >= 4)
+                eval -= 50.0 * playerCheckers;
+            else if (playerCheckers >= 2)
                 eval += 200.0;
-            else if (numCheckers == 1)
+            else if (playerCheckers == 1) 
                 eval -= 250.0;
 
-            if ((player == 1 && i >= 13) || (player == 2 && i <= 12))
-                checkersInLastHalf += numCheckers;
+            if (i <= 12)
+                checkersProximasOff += playerCheckers;
 
-            if ((player == 1 && i <= 6) || (player == 2 && i >= 19))
-                checkersInFirstSix += numCheckers;
+            if (i >= 19)
+                checkersDistantesOff += playerCheckers;
 
-            if ((player == 1 && i <= 13) || (player == 2 && i >= 12))
-                eval -= 20.0 * numCheckers;
+            if (i >= 12)
+                eval -= 20.0 * playerCheckers;
             else
-                eval += 20.0 * numCheckers;
+                eval += 20.0 * playerCheckers;
         }
 
-        // Caso tenha 15 peças na última metade do tabuleiro, soma 1000 pontos
-        // Caso tenha 12 ou mais peças, soma 400 pontos
-        // Caso tenha 9 ou mais peças, soma 250 pontos
-        // Caso tenha 6 ou mais peças, soma 40 pontos
-        // Caso tenha 3 ou mais peças, soma 15 pontos
-        if (checkersInLastHalf == 15)
+        // Ajuda a manter as peças na última metade do tabuleiro
+        // e a mandar uma peça comida para a última metade de forma
+        // mais rápida.
+        if (checkersProximasOff == 15)
             eval += 1000.0;
-        else if (checkersInLastHalf >= 12)
+        else if (checkersProximasOff >= 12)
             eval += 400.0;
-        else if (checkersInLastHalf >= 9)
+        else if (checkersProximasOff >= 9)
             eval += 250.0;
-        else if (checkersInLastHalf >= 6)
+        else if (checkersProximasOff >= 6)
             eval += 40.0;
-        else if (checkersInLastHalf >= 3)
+        else if (checkersProximasOff >= 3)
             eval += 15.0;
 
-        // Caso tenha 0 peças nas primeiras 6 casas, soma 1000 pontos
         // Caso tenha 1 peça, subtrai 500 pontos
         // Caso tenha 2 ou mais peças, subtrai 1000 pontos
-        if (checkersInFirstSix == 0)
-            eval += 1000.0;
-        else if (checkersInFirstSix == 1)
+        if (checkersDistantesOff == 1)
             eval -= 500.0;
-        else if (checkersInFirstSix >= 2)
+        else if (checkersDistantesOff >= 2)
             eval -= 1000.0;
 
         // Faz de tudo pra tirar as duas ultimas pecas
@@ -101,13 +84,14 @@ public class EquipeHeuristicaAI implements AI {
         if (player == 1)
             eval -= 1000.0 * bs.getPoint(1, 24);
         else
-            eval -= 1000.0 * bs.getPoint(2, 1);
+            eval -= 1000.0 * bs.getPoint(2, 24);
 
-        int checkersAtBar = bs.getBar(player);
         int bearedOffCheckers = bs.getOff(player);
         int opponentCheckersAtBar = bs.getBar(opponent);
 
-        eval += 1000*bearedOffCheckers + 5000.0 * opponentCheckersAtBar;
+        // Para o late game, utilidade máxima por peças fora do tabuleiro,
+        // afinal, é o objetivo do jogo
+        eval += 1000 * bearedOffCheckers + 200.0 * opponentCheckersAtBar;
 
         return eval;
     }
@@ -115,6 +99,7 @@ public class EquipeHeuristicaAI implements AI {
     public SingleMove[] makeMoves(BoardSetup bs) throws CannotDecideException {
         double eval = Double.NEGATIVE_INFINITY;
         int movimento = -1;
+        int player = bs.getPlayerAtMove();
 
         PossibleMoves pm = new PossibleMoves(bs);
         List<PossibleMoves> moveList = pm.getPossbibleNextSetups();
@@ -122,7 +107,7 @@ public class EquipeHeuristicaAI implements AI {
         int i = 0;
         for (Iterator iter = moveList.iterator(); iter.hasNext(); i++) {
             BoardSetup boardSetup = (BoardSetup) iter.next();
-            double thisEvaluation = heuristica(boardSetup);
+            double thisEvaluation = heuristica(boardSetup, player);
             if (thisEvaluation > eval) {
                 eval = thisEvaluation;
                 movimento = i;
@@ -137,23 +122,35 @@ public class EquipeHeuristicaAI implements AI {
 
     public boolean vantagemClara(BoardSetup boardSetup, int player) {
         int opponent = 3 - player;
-        int checkersInLastSix = 0;
-        int opponentCheckersInLastHalf = 0;
+        int checkersPertoOff = 0;
+        int opponentCheckersPertoOff = 0;
         int playerCheckers = 0;
         int opponentCheckers = 0;
+        int checkersLongeOff = 0;
+        int opponentCheckersLongeOff = 0;
 
-        for (int i = 0; i <= 25; i++) {
+        for (int i = 1; i < 25; i++) {
             playerCheckers = boardSetup.getPoint(player, i);
             opponentCheckers = boardSetup.getPoint(opponent, i);
 
-            if ((player == 2 && i > 18) || (player == 1 && i <= 6))
-                checkersInLastSix += playerCheckers;
-
-            if ((opponent == 1 && i > 12) || (opponent == 2 && i <= 12))
-                opponentCheckersInLastHalf += opponentCheckers;
+            if (i >= 13){
+               checkersLongeOff += playerCheckers;
+                opponentCheckersLongeOff += opponentCheckers;
+            }
+            if (i <= 6){
+                checkersPertoOff += playerCheckers;
+                opponentCheckersPertoOff += opponentCheckers;
+            }
         }
 
-        if (checkersInLastSix == 15 && opponentCheckersInLastHalf < 12)
+        checkersLongeOff += boardSetup.getBar(player);
+        opponentCheckersLongeOff += boardSetup.getBar(opponent);
+        checkersPertoOff += boardSetup.getOff(player);
+        opponentCheckersPertoOff += boardSetup.getOff(opponent);
+        int diferencaOff = boardSetup.getOff(player) - boardSetup.getOff(opponent);
+        int diferencaPertoOff = checkersPertoOff - opponentCheckersPertoOff;
+        int diferencaLongeOff = opponentCheckersLongeOff - checkersLongeOff;
+        if (diferencaOff > 4 || (diferencaPertoOff > 4 && checkersPertoOff > 10) || diferencaLongeOff > 3)
             return true;
         else
             return false;
@@ -169,7 +166,7 @@ public class EquipeHeuristicaAI implements AI {
     }
 
     public int takeOrDrop(BoardSetup boardSetup) throws CannotDecideException {
-        int opponent = 3-boardSetup.getPlayerAtMove();
+        int opponent = boardSetup.getPlayerAtMove();
         if(vantagemClara(boardSetup, opponent)){
             return DROP;
         }    
