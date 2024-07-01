@@ -57,12 +57,12 @@ public class EquipeMinimaxAI implements AI{
         double eval = 0.0;
         int opponent = 3 - player;
 
-        int checkersInLastHalf = 0;
-        int checkersInFirstSix = 0;
+        int checkersProximasOff = 0;
+        int checkersDistantesOff = 0;
 
         for (int i = 1; i < 25; i++) {
             int playerCheckers = bs.getPoint(player, i);
-            int opponentCheckers = bs.getPoint(opponent, i);
+            //int opponentCheckers = bs.getPoint(opponent, i);
 
             // Caso tenha 4 ou mais peças na casa, subtrai 50 pontos por peça
             // Caso tenha 2 ou 3 peças, soma 200 pontos
@@ -75,10 +75,10 @@ public class EquipeMinimaxAI implements AI{
                 eval -= 250.0;
 
             if (i <= 12)
-                checkersInLastHalf += playerCheckers;
+                checkersProximasOff += playerCheckers;
 
             if (i >= 19)
-                checkersInFirstSix += playerCheckers;
+                checkersDistantesOff += playerCheckers;
 
             if (i >= 12)
                 eval -= 20.0 * playerCheckers;
@@ -86,30 +86,25 @@ public class EquipeMinimaxAI implements AI{
                 eval += 20.0 * playerCheckers;
         }
 
-        // Caso tenha 15 peças na última metade do tabuleiro, soma 1000 pontos
-        // Caso tenha 12 ou mais peças, soma 400 pontos
-        // Caso tenha 9 ou mais peças, soma 250 pontos
-        // Caso tenha 6 ou mais peças, soma 40 pontos
-        // Caso tenha 3 ou mais peças, soma 15 pontos
         // Ajuda a manter as peças na última metade do tabuleiro
         // e a mandar uma peça comida para a última metade de forma
         // mais rápida.
-        if (checkersInLastHalf == 15)
+        if (checkersProximasOff == 15)
             eval += 1000.0;
-        else if (checkersInLastHalf >= 12)
+        else if (checkersProximasOff >= 12)
             eval += 400.0;
-        else if (checkersInLastHalf >= 9)
+        else if (checkersProximasOff >= 9)
             eval += 250.0;
-        else if (checkersInLastHalf >= 6)
+        else if (checkersProximasOff >= 6)
             eval += 40.0;
-        else if (checkersInLastHalf >= 3)
+        else if (checkersProximasOff >= 3)
             eval += 15.0;
 
         // Caso tenha 1 peça, subtrai 500 pontos
         // Caso tenha 2 ou mais peças, subtrai 1000 pontos
-        if (checkersInFirstSix == 1)
+        if (checkersDistantesOff == 1)
             eval -= 500.0;
-        else if (checkersInFirstSix >= 2)
+        else if (checkersDistantesOff >= 2)
             eval -= 1000.0;
 
         // Faz de tudo pra tirar as duas ultimas pecas
@@ -221,15 +216,8 @@ public class EquipeMinimaxAI implements AI{
         int diferencaOff = boardSetup.getOff(player) - boardSetup.getOff(opponent);
         int diferencaPertoOff = checkersPertoOff - opponentCheckersPertoOff;
         int diferencaLongeOff = opponentCheckersLongeOff - checkersLongeOff;
-        if (diferencaOff > 4) {
+        if (diferencaOff > 4 || (diferencaPertoOff > 4 && checkersPertoOff > 10) || diferencaLongeOff > 3)
             return true;
-        }
-        else if(diferencaPertoOff > 4 && checkersPertoOff > 10){
-            return true;
-        }
-        else if(diferencaLongeOff > 3){
-            return true;
-        }
         else
             return false;
     }
@@ -260,7 +248,7 @@ public class EquipeMinimaxAI implements AI{
      */
     @Override
     public int takeOrDrop(BoardSetup boardSetup) throws CannotDecideException {
-        int opponent = boardSetup.getPlayerAtMove();
+        int opponent = 3-boardSetup.getPlayerAtMove();
         if(vantagemClara(boardSetup, opponent))
             return DROP;
         else
