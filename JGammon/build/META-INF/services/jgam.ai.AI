@@ -21,3 +21,5 @@ jgam.ai.Runner_AI
 jgam.ai.EquipeHeuristicaAI
 
 jgam.ai.EquipeMinimaxAI
+
+jgam.ai.OnssinhaAI

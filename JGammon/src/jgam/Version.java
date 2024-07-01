@@ -2,7 +2,7 @@
 			package jgam;
 			public class Version {
 				public static final String VERSION = "1.1-pre2";
-				public static final String BUILD_NUMBER = "201";
-				public static final String BUILD_DATE = "Sun, 30 Jun 2024 23:56:52 -0300";
+				public static final String BUILD_NUMBER = "218";
+				public static final String BUILD_DATE = "Mon, 1 Jul 2024 19:18:43 -0300";
 			}
 		

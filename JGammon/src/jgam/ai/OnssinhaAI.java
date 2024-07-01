@@ -1,56 +1,32 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package jgam.ai;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import jgam.game.BoardSetup;
 import jgam.game.PossibleMoves;
 import jgam.game.SingleMove;
 
-public class EquipeMinimaxAI implements AI{
-        /**
-     * initialize this instance. Is called before it is used to
-     * make decisions.
-     *
-     * @throws Exception if sth goes wrong during init.
-     */
-    @Override
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+
+public class OnssinhaAI implements AI {
+    private Map<String, Double> memoizationMap = new HashMap<>();
+
     public void init() throws Exception {
 
     }
 
-    /**
-     * free all used resources.
-     */
-    @Override
     public void dispose() {
 
     }
 
-    /**
-     * get the name of this AI Method.
-     *
-     * @return String
-     */
-    @Override
     public String getName() {
-        return "IA implementada pela equipe";
+        return "Onssinha AI";
     }
 
-    /**
-     * get a short description of this method.
-     *
-     * @return String
-     */
-    @Override
     public String getDescription() {
-        return "IA da equipe - expectiminimax";
+        return "Onssinha";
     }
 
     private double heuristica(BoardSetup bs, int player) {
@@ -59,12 +35,10 @@ public class EquipeMinimaxAI implements AI{
 
         int checkersProximasOff = 0;
         int checkersDistantesOff = 0;
-        int opponentCheckersProximasOff = 0;
-        int opponentCheckersDistantesOff = 0;
 
         for (int i = 1; i < 25; i++) {
             int playerCheckers = bs.getPoint(player, i);
-            int opponentCheckers = bs.getPoint(opponent, i);
+            //int opponentCheckers = bs.getPoint(opponent, i);
 
             // Caso tenha 4 ou mais peças na casa, subtrai 50 pontos por peça
             // Caso tenha 2 ou 3 peças, soma 200 pontos
@@ -76,22 +50,14 @@ public class EquipeMinimaxAI implements AI{
             else if (playerCheckers == 1) 
                 eval -= 250.0;
 
-            if (i <= 12){
+            if (i <= 12)
                 checkersProximasOff += playerCheckers;
-                opponentCheckersProximasOff += opponentCheckers;
-            }
 
-            if (i >= 19){
+            if (i >= 19)
                 checkersDistantesOff += playerCheckers;
-                opponentCheckersDistantesOff += opponentCheckers;
-            }
 
-            if(i==18){
-                eval -= 500 * playerCheckers;
-            }
-
-            if (i >= 13)
-                eval -= 50.0 * playerCheckers;
+            if (i >= 12)
+                eval -= 20.0 * playerCheckers;
             else
                 eval += 20.0 * playerCheckers;
         }
@@ -130,73 +96,89 @@ public class EquipeMinimaxAI implements AI{
         // Para o late game, utilidade máxima por peças fora do tabuleiro,
         // afinal, é o objetivo do jogo
         eval += 1000 * bearedOffCheckers + 200.0 * opponentCheckersAtBar;
-        eval += vantagemClara(bs, player) ? 5000.0 : 0.0;
-        eval -= vantagemClara(bs, opponent) ? 5000.0 : 0.0;
 
         return eval;
     }
- 
 
-    //Etapa de min
-    double min(BoardSetup boardSetup, int player) {
-        double bestValue = Double.NEGATIVE_INFINITY;
-        for(int dado1 = 1; dado1 <= 6; ++dado1) {
-            for(int dado2 = dado1; dado2 <= 6; ++dado2) {
-                boardSetup.setDice(dado1, dado2);
+    public SingleMove[] makeMoves(BoardSetup bs) throws CannotDecideException {
+        int player = bs.getPlayerAtMove();
 
-                PossibleMoves pm = new PossibleMoves(boardSetup);
-                List list = pm.getPossbibleNextSetups();
-                int index = 0;
+        // Definir profundidade máxima da busca
+        int depth = 1;
 
-                for (Iterator iter = list.iterator(); iter.hasNext(); index++) {
-                    BoardSetup setup = (BoardSetup) iter.next();
-                    double value = heuristica(setup, player);
-                    value = dado1 == dado2 ? value / 36 : value / 18;
+        // Chamar o algoritmo Minimax com alpha-beta pruning
+        double bestEval = Double.NEGATIVE_INFINITY;
+        int bestMoveIndex = -1;
 
-                    if (value > bestValue)
-                        bestValue = value;
+        PossibleMoves pm = new PossibleMoves(bs);
+        List<BoardSetup> moveList = pm.getPossbibleNextSetups();
 
-                }
+        for (int i = 0; i < moveList.size(); i++) {
+            BoardSetup boardSetup = moveList.get(i);
+            double evaluation = heuristica(bs, player);
+            evaluation -= minimax(boardSetup, depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, false);
+            if (evaluation > bestEval) {
+                bestEval = evaluation;
+                bestMoveIndex = i;
             }
         }
-        return bestValue;
-    }
 
-
-    @Override
-    public SingleMove[] makeMoves(BoardSetup boardSetup) throws CannotDecideException {
-        int player = boardSetup.getPlayerAtMove();
-        PossibleMoves pm = new PossibleMoves(boardSetup);
-        int bestIndex = expectiminimax(boardSetup, player);
-
-        if (bestIndex == -1)
+        if (bestMoveIndex == -1) {
             return new SingleMove[0];
-        else
-            return pm.getMoveChain(bestIndex);
-
+        } else {
+            return pm.getMoveChain(bestMoveIndex);
+        }
     }
 
-    public int expectiminimax(BoardSetup boardSetup, int player) {
-        double bestValue = Double.NEGATIVE_INFINITY;
-        int bestIndex = -1;
-        int index = 0;
-        PossibleMoves pm = new PossibleMoves(boardSetup);
-        List list = pm.getPossbibleNextSetups();
+    private double minimax(BoardSetup bs, int depth, double alpha, double beta, boolean maximizingPlayer) {
 
-        for (Iterator iter = list.iterator(); iter.hasNext(); index++) {
-            BoardSetup setup = (BoardSetup) iter.next();
-            double value = heuristica(setup, player);
-            value -= min(setup, 3-player);
+        // Verificar se é um nó terminal ou atingiu a profundidade máxima
+        if (depth == 0 || bs.getOff(1)==15 || bs.getOff(2)==15) {
+            return heuristica(bs, 3-bs.getPlayerAtMove());
+        }
 
-            if (value > bestValue) {
-                bestValue = value;
-                bestIndex = index;
+        double minEval = Double.POSITIVE_INFINITY;
+        double maxEval = Double.NEGATIVE_INFINITY;
+
+        for(int dado1=1; dado1<=6; ++dado1) {
+            for(int dado2=dado1; dado2<=6; ++dado2) {
+                bs.setDice(dado1, dado2);
+
+                if(maximizingPlayer){
+                    PossibleMoves pm = new PossibleMoves(bs);
+                    List<BoardSetup> moveList = pm.getPossbibleNextSetups();
+
+                    for (BoardSetup child : moveList) {
+                        double eval = minimax(child, depth - 1, alpha, beta, false);
+                        maxEval = Math.max(maxEval, eval);
+                        alpha = Math.max(alpha, eval);
+                        System.out.println("Alpha: " + alpha + " Beta: " + beta);
+                        if (beta <= alpha) {
+                            break; // Poda beta
+                        }
+                    }
+                } else {
+                    PossibleMoves pm = new PossibleMoves(bs);
+                    List<BoardSetup> moveList = pm.getPossbibleNextSetups();
+
+                    for (BoardSetup child : moveList) {
+                        double eval = minimax(child, depth - 1, alpha, beta, true);
+                        minEval = Math.min(minEval, eval);
+                        beta = Math.min(beta, eval);
+                        System.out.println("Alpha 2: " + alpha + " Beta 2: " + beta);
+                        if (beta <= alpha) {
+                            break; // Poda alpha
+                        }
+                    }
+                }
+
             }
         }
 
-        return bestIndex;
+        return maximizingPlayer ? maxEval : minEval;
     }
 
+    
     public boolean vantagemClara(BoardSetup boardSetup, int player) {
         int opponent = 3 - player;
         int checkersPertoOff = 0;
