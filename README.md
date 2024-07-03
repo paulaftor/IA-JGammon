@@ -1,5 +1,7 @@
 # IA-JGammon
 
+Implementação de uma IA para o jogo de gamão, por meio de heurísticas e algoritmos de busca competitiva.
+
 Para executar o código, basta entrar na pasta JGammon e executar o comando
 ```sh
 ant run
