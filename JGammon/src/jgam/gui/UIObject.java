@@ -160,8 +160,11 @@ public class UIObject {
                         Game.player2Points += game.getBoardSetup().getDoubleCube();
                     }
                     if(game.jogosRestantes == 0) {
+                        String msgFinal = Game.player1Points > Game.player2Points ? "White venceu!" : "Red venceu!";
+                        if(Game.player1Points == Game.player2Points) msgFinal = "Empate";
                         JOptionPane.showMessageDialog(jgam.getFrame(), 
-                        "White: " + Game.player1Victories + " ("+Game.player1Points+" points)\nRed: " + Game.player2Victories + " ("+Game.player2Points+" points)",
+                        "White: " + Game.player1Victories + " ("+Game.player1Points+" points)\nRed: " + Game.player2Victories 
+                        + " ("+Game.player2Points+" points)\n\n"+msgFinal,
                         "Game over", JOptionPane.INFORMATION_MESSAGE);
                     }
                     System.out.println("White: " + Game.player1Victories);
